@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import Nav from 'react-bootstrap/Nav'
 
 const Header = () => (
-  <Nav defaultActiveKey="/" as="ul">
+  <Nav defaultActiveKey="/" as="ul" expand="lg" fixed="top">
     <Nav.Item as="li">
       <Nav.Link>
         <Link to="/">
