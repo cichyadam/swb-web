@@ -1,5 +1,4 @@
 const jwt = require('jsonwebtoken');
-const { User } = require('../models');
 const config = require('../config/config');
 
 function jwtSignUser(user) {
@@ -15,12 +14,7 @@ module.exports = {
             });
         } else {
             try {
-                const user = await User.create(req.body);
-                const userJson = user.toJSON();
-                res.send({
-                    user: userJson,
-                    token: jwtSignUser(userJson),
-                });
+              // mongoose code
             } catch (err) {
                 res.status(400).send({
                     error: 'This username is already in use',
@@ -36,11 +30,7 @@ module.exports = {
             });
         } else {
             try {
-                const user = await User.findOne({
-                    where: {
-                        username,
-                    },
-                });
+                // mongoose code
                 if (!user) {
                     res.status(403).send({
                         error: 'Username not registered in the database', // message should be more generic for security purpouses

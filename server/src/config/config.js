@@ -1,16 +1,8 @@
-require('dotenv').config();
-
 module.exports = {
-    port: process.env.PORT || 8081,
+    port: process.env.PORT || 8080,
+    host: process.env.HOST || '0.0.0.0',
     db: {
-        database: process.env.DB_NAME || 'reciper',
-        user: process.env.DB_USER || 'root',
-        password: process.env.DB_PASS || '',
-        options: {
-            dialect: process.env.DIALECT || 'sqlite',
-            host: process.env.HOST || 'localhost',
-            storage: './reciper.sqlite',
-        },
+        uri: 'mongodb://mongo:27017/' + process.env.DB_NAME
     },
     authentication: {
         jwtSecret: process.env.JWT_SECRET || 'secret',
