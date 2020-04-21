@@ -4,4 +4,4 @@ module.exports = {
     async getByUsername(username) {
       return await User.findOne({ username })
     },
-};
+}

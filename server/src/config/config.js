@@ -9,4 +9,4 @@ module.exports = {
         jwtSecret: process.env.JWT_SECRET || 'sguJ5wezitn5n7wBcPMqACa12ZBbKAEEhqT2dQ3Vnl3Qf1BXysXGsEGvNBhmOeC',
         salt_factor: 10,
     },
-};
+}

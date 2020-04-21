@@ -36,9 +36,9 @@ module.exports = {
                     username,
                     password
                 })
-    
+
                 await newUser.save().catch(() => new ErrorHandler(422, USER_NOT_SAVED, __filename))
-    
+
                 res.status(200).json({
                     token: jwtSignUser(newUser)
                 })
@@ -74,4 +74,4 @@ module.exports = {
             }
         }
     },
-};
+}

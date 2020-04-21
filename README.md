@@ -13,7 +13,7 @@ Steps to install and run development environment (**pre-docker**)
 
 ### Database
 
-- Install MongoDB community server from  [MongoDB website](https://www.mongodb.com/)
+- Install MongoDB community server from [MongoDB website](https://www.mongodb.com/)
 
 ## Start development environment
 
