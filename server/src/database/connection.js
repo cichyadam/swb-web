@@ -1,6 +1,6 @@
 // connection.js
 const mongoose = require("mongoose");
-const User = require("./../models/User.model");
+const User = require("../models/Users/User.model");
 const config = require('./../config/config');
 
 const connection = config.db.uri;

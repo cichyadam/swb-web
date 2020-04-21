@@ -1,5 +1,6 @@
-const jwt = require('jsonwebtoken');
-const config = require('../../config/config');
+const jwt = require('jsonwebtoken')
+const config = require('../../config/config')
+const { ErrorHandler } = require('../../helpers/errors/error')
 
 module.exports = {
     authorize(req, res, next) {
@@ -7,9 +8,7 @@ module.exports = {
 
         jwt.verify(token, config.authentication.jwtSecret, (err) => {
             if (err) {
-                res.status(403).json({
-                    error: 'Token is invalid or expired',
-                });
+                throw new ErrorHandler(403, err, __filename)
             } else {
                 next();
             }

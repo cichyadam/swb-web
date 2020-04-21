@@ -1,60 +1,76 @@
-const jwt = require('jsonwebtoken');
-const config = require('../config/config');
+const jwt = require('jsonwebtoken')
+const config = require('../config/config')
+const User = require('../models/Users/User.model')
+const { ErrorHandler } = require('../helpers/errors/error')
+const UserService = require('..//services/UserService')
 
-function jwtSignUser(user) {
-    return jwt.sign(user, config.authentication.jwtSecret);
+const jwtSignUser = (user) => {
+    return jwt.sign({
+        iss: config.authentication.issuer,
+        sub: user.id,
+        iat: new Date().getTime(),
+        exp: new Date().setDate(new Date().getDate() + 1) // Expiry in 1 day
+    }, config.authentication.jwtSecret)
 }
 
+const USER_NOT_SAVED = 'There was a problem saving the user'
+const USER_EXISTS_ERROR = 'This username already exists'
+const USER_DOES_NOT_EXIST_ERROR = 'This username already exists'
+const INCORRECT_PASSWORD = 'Password incorrect'
+
 module.exports = {
-    async register(req, res) {
-        const { username, password } = req.body;
-        if (typeof username !== 'string' || typeof password !== 'string') {
-            res.status(500).send({
-                error: 'invalid type',
-            });
+    async register(req, res, next) {
+        const { username, password } = req.body
+
+        const user = await UserService.getByUsername(username)
+
+        if (user) {
+            try {
+                throw new ErrorHandler(403, USER_EXISTS_ERROR, __filename)
+            } catch (err) {
+                next(err)
+            }
         } else {
             try {
-              // mongoose code
+                const newUser = new User({
+                    username,
+                    password
+                })
+    
+                await newUser.save().catch(() => new ErrorHandler(422, USER_NOT_SAVED, __filename))
+    
+                res.status(200).json({
+                    token: jwtSignUser(newUser)
+                })
             } catch (err) {
-                res.status(400).send({
-                    error: 'This username is already in use',
-                });
+                next(err)
             }
         }
     },
-    async login(req, res) {
+    async login(req, res, next) {
         const { username, password } = req.body;
-        if (typeof username !== 'string' || typeof password !== 'string') {
-            res.status(403).json({
-                error: 'invalid type',
-            });
+
+        const user = await UserService.getByUsername(username)
+
+        if (!user) {
+            try {
+                throw new ErrorHandler(403, USER_DOES_NOT_EXIST_ERROR, __filename)
+            } catch (err) {
+                next(err)
+            }
         } else {
             try {
-                // mongoose code
-                if (!user) {
-                    res.status(403).send({
-                        error: 'Username not registered in the database', // message should be more generic for security purpouses
-                    });
-                }
+                const isPasswordValid = await user.comparePassword(password)
 
-                // eslint-disable-next-line max-len
-                // use password compare method from the user object to check login info against hashed password
-                const isPasswordValid = await user.comparePassword(password);
                 if (!isPasswordValid) {
-                    res.status(403).send({
-                        error: 'Password incorrect',
-                    });
+                    throw new ErrorHandler(403, INCORRECT_PASSWORD, __filename)
                 }
 
-                const userJson = user.toJSON();
-                res.send({
-                    user: userJson,
-                    token: jwtSignUser(userJson),
-                });
+                res.status(200).json({
+                    token: jwtSignUser(user)
+                })
             } catch (err) {
-                res.status(403).send({
-                    error: `Error occured trying to log in ${err}`,
-                });
+                next(err)
             }
         }
     },

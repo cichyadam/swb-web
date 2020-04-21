@@ -1,5 +1,5 @@
 const config = require('../config/config');
-const User = require('./../models/User.model');
+const User = require('../models/Users/User.model');
 
 module.exports = {
   async test(req, res) {
