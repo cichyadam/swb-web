@@ -1,5 +1,6 @@
 const mongoose = require('mongoose')
-const Schema = mongoose.Schema
+
+const { Schema } = mongoose
 const bcrypt = require('bcrypt')
 const config = require('../../config/config')
 const { ErrorHandler } = require('../../helpers/errors/error')

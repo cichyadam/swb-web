@@ -2,7 +2,7 @@ const jwt = require('jsonwebtoken')
 const config = require('../config/config')
 const User = require('../models/Users/User.model')
 const { ErrorHandler } = require('../helpers/errors/error')
-const UserService = require('..//services/UserService')
+const UserService = require('../services/UserService')
 
 const jwtSignUser = (user) => {
   return jwt.sign({
@@ -38,7 +38,7 @@ module.exports = {
 
         res.status(200).json(newUser)
       } catch (err) {
-          next(err)
+        next(err)
       }
     }
   },
@@ -65,7 +65,7 @@ module.exports = {
           token: jwtSignUser(user)
         })
       } catch (err) {
-          next(err)
+        next(err)
       }
     }
   }
