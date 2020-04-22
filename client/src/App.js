@@ -7,6 +7,7 @@ import Header from './components/Header'
 import Footer from './components/Footer'
 
 import HomePage from './pages/HomePage'
+import AdminPage from './pages/AdminPage'
 
 const App = () => (
   <Router>
@@ -26,7 +27,7 @@ const App = () => (
           <h2>Blog</h2>
         </Route>
         <Route path="/admin">
-          <h2>Admin</h2>
+          <AdminPage />
         </Route>
       </Switch>
       <Footer />
