@@ -18,7 +18,7 @@ const App = () => {
     if (authToken) {
       setToken(authToken)
     }
-  }, [token])
+  }, [])
 
   return (
     <Router>

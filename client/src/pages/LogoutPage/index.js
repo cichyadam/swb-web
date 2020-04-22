@@ -2,9 +2,9 @@ import React, { useEffect } from 'react'
 import PropTypes from 'prop-types'
 import { Redirect } from 'react-router-dom'
 
-const LogoutPage = (removeToken) => {
+const LogoutPage = ({removeToken}) => {
   useEffect(() => {
-    /* removeToken(null) */
+    removeToken(null)
     sessionStorage.clear()
   }, [])
   return (

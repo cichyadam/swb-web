@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { Link } from 'react-router-dom'
 import { Navbar, Nav } from 'react-bootstrap'
 
-const Header = (token) => (
+const Header = ({ token }) => (
   <Navbar bg="white" expand="lg">
     <Nav>
       { token ? (
