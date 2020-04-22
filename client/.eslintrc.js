@@ -23,5 +23,11 @@ module.exports = {
     'react',
   ],
   rules: {
+     'react/jsx-filename-extension': [1, {
+       'extensions': ['.js', '.jsx']
+     }],
+     'indent': ['error', 2],
+     'semi': ['error', 'never'],
+     'comma-dangle': ['error', 'never'],
   },
 };
