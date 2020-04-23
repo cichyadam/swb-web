@@ -13,7 +13,19 @@ const schemas = {
       .pattern(new RegExp('^[a-zA-Z0-9]{3,30}$'))
       .required(),
 
-    repeat_password: Joi.ref('password'),
+    first_name: Joi.string()
+      .alphanum()
+      .required()
+      .min(2)
+      .max(30),
+
+    last_name: Joi.string()
+      .alphanum()
+      .required()
+      .min(2)
+      .max(30),
+
+    repeat_password: Joi.ref('password')
   }),
 
   userLogin: Joi.object().keys({
@@ -25,7 +37,7 @@ const schemas = {
 
     password: Joi.string()
       .pattern(new RegExp('^[a-zA-Z0-9]{3,30}$'))
-      .required(),
+      .required()
   })
 
 }
