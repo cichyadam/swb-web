@@ -1,14 +1,15 @@
 /* eslint-disable consistent-return */
 /* eslint-disable no-return-await */
 const Role = require('../models/Users/Role.model')
+const { decamelize } = require('../helpers/decamelize')
 
 module.exports = {
   async create(role) {
-    return await Role.create(role)
+    return await Role.create(decamelize(role))
   },
 
   async delete(role) {
-    return await Role.deleteOne(role)
+    return await Role.deleteOne(decamelize(role))
   },
 
   async updateByName(oldName, newName) {

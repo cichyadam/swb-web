@@ -1,7 +1,8 @@
 const jwt = require('jsonwebtoken')
 const config = require('../config/config')
-const { ErrorHandler } = require('../helpers/errors/error')
+const { ErrorHandler, handleMongooseError } = require('../helpers/errors/error')
 const UserService = require('../services/UserService')
+const { handleResponse } = require('../helpers/resources/response')
 
 const jwtSignUser = (user) => jwt.sign({
   iss: config.authentication.issuer,
@@ -35,11 +36,9 @@ module.exports = {
           username, password, firstName, lastName
         })
 
-        if (!newUser) throw new ErrorHandler(403, USER_NOT_SAVED, __filename)
-
-        res.status(200).json(newUser)
+        handleResponse({ user: newUser}, res)
       } catch (err) {
-        next(err)
+        next(handleMongooseError(err.errors))
       }
     }
   },
@@ -62,9 +61,11 @@ module.exports = {
           throw new ErrorHandler(403, INCORRECT_PASSWORD, __filename)
         }
 
-        res.status(200).json({
+        const data = {
           token: jwtSignUser(user)
-        })
+        }
+
+        handleResponse(data, res)
       } catch (err) {
         next(err)
       }

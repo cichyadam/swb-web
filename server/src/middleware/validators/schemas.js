@@ -13,13 +13,13 @@ const schemas = {
       .pattern(new RegExp('^[a-zA-Z0-9]{3,30}$'))
       .required(),
 
-    first_name: Joi.string()
+    firstName: Joi.string()
       .alphanum()
       .required()
       .min(2)
       .max(30),
 
-    last_name: Joi.string()
+    lastName: Joi.string()
       .alphanum()
       .required()
       .min(2)
@@ -53,7 +53,7 @@ const schemas = {
       .required()
       .min(10)
       .max(15000),
-    imageURL: Joi.string()
+    imageUrl: Joi.string()
       .required()
       .min(5)
       .max(50)
