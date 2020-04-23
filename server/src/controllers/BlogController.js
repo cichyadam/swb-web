@@ -1,4 +1,3 @@
-// const BlogPost = require('../models/BlogPosts/BlogPost.model')
 const { ErrorHandler } = require('../helpers/errors/error')
 const BlogPostService = require('../services/BlogPostService')
 

@@ -57,7 +57,15 @@ const schemas = {
       .required()
       .min(5)
       .max(50)
+  }),
+
+  tag: Joi.object().keys({
+    name: Joi.string()
+      .required()
+      .min(3)
+      .max(15)
   })
+
 
 }
 module.exports = schemas

@@ -19,13 +19,17 @@ const BlogPostSchema = new Schema({
     type: String,
     required: true
   },
-  published: {
+  createdAt: {
     type: Date,
     default: Date.now
   },
-  updated: {
+  updatedAt: {
     type: Date,
     default: Date.now
+  },
+  tags: {
+    type: Schema.Types.ObjectId,
+    ref: 'Tag'
   }
 })
 
