@@ -1,5 +1,3 @@
-const config = require('../config/config')
-const User = require('../models/Users/User.model')
 const RoleService = require('../services/RoleService')
 const UserService = require('../services/UserService')
 const PermissionService = require('../services/PermissionService')

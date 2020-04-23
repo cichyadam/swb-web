@@ -1,13 +1,6 @@
-const express = require('express')
-const mongoose = require('mongoose')
-const bodyParser = require('body-parser')
-const cors = require('cors')
-const morgan = require('morgan')
-const helmet = require('helmet')
 const app = require('./server')
 const connectDb = require('./database/connection')
 const config = require('./config/config')
-const { handleError } = require('./helpers/errors/error')
 
 app.listen(config.port, (error) => {
   if (error) {

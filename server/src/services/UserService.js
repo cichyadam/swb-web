@@ -1,3 +1,5 @@
+/* eslint-disable consistent-return */
+/* eslint-disable no-return-await */
 const User = require('../models/Users/User.model')
 
 module.exports = {
@@ -31,6 +33,7 @@ module.exports = {
 
     if (!user) return
 
+    // eslint-disable-next-line array-callback-return
     Object.keys(newData).map((key) => {
       if (key !== 'id' && key !== '_id') {
         user[key] = newData[key]

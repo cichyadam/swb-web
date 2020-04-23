@@ -1,3 +1,4 @@
+/* eslint-disable consistent-return */
 const mongoose = require('mongoose')
 
 const { Schema } = mongoose
@@ -38,6 +39,7 @@ UserSchema.pre('save', function (next) {
   bcrypt.genSalt(config.authentication.salt_factor, (err, salt) => {
     if (err) return next(err)
 
+    // eslint-disable-next-line no-shadow
     bcrypt.hash(user.password, salt, (err, hash) => {
       if (err) return next(err)
 
