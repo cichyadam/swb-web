@@ -18,5 +18,6 @@ module.exports = {
     'indent': ['error', 2],
     'semi': ['error', 'never'],
     'comma-dangle': ['error', 'never'],
+    'func-names': ['error', 'never']
   },
 };

@@ -1,15 +1,17 @@
+/* eslint-disable consistent-return */
+/* eslint-disable no-return-await */
 const Role = require('../models/Users/Role.model')
 
 module.exports = {
-  async create (role) {
+  async create(role) {
     return await Role.create(role)
   },
 
-  async delete (role) {
+  async delete(role) {
     return await Role.deleteOne(role)
   },
 
-  async updateByName (oldName, newName) {
+  async updateByName(oldName, newName) {
     const role = await Role.findOne({ name: oldName })
 
     if (!role) return
@@ -19,7 +21,7 @@ module.exports = {
     return await role.save()
   },
 
-  async updateById (id, newName) {
+  async updateById(id, newName) {
     const role = await Role.findById(id)
 
     if (!role) return
@@ -29,22 +31,22 @@ module.exports = {
     return await role.save()
   },
 
-  async list () {
+  async list() {
     return await Role.find()
-    .populate('permissions')
+      .populate('permissions')
   },
 
-  async getOneByName (name) {
+  async getOneByName(name) {
     return await Role.findOne({ name })
-    .populate('permissions')
+      .populate('permissions')
   },
 
-  async getOneById (id) {
+  async getOneById(id) {
     return await Role.findById(id)
-    .populate('permissions')
+      .populate('permissions')
   },
 
-  async addPermission (roleId, permissionId) {
+  async addPermission(roleId, permissionId) {
     const role = await Role.findById(roleId)
 
     if (!role) return
@@ -54,7 +56,7 @@ module.exports = {
     return await role.save()
   },
 
-  async removePermission (roleId, permissionId) {
+  async removePermission(roleId, permissionId) {
     const role = await Role.findById(roleId)
 
     if (!role) return

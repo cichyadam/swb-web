@@ -1,17 +1,14 @@
 const jwt = require('jsonwebtoken')
 const config = require('../config/config')
-const User = require('../models/Users/User.model')
 const { ErrorHandler } = require('../helpers/errors/error')
-const UserService = require('..//services/UserService')
+const UserService = require('../services/UserService')
 
-const jwtSignUser = (user) => {
-  return jwt.sign({
-    iss: config.authentication.issuer,
-    sub: user.id,
-    iat: new Date().getTime(),
-    exp: new Date().setDate(new Date().getDate() + 1) // Expiry in 1 day
-  }, config.authentication.jwtSecret)
-}
+const jwtSignUser = (user) => jwt.sign({
+  iss: config.authentication.issuer,
+  sub: user.id,
+  iat: new Date().getTime(),
+  exp: new Date().setDate(new Date().getDate() + 1) // Expiry in 1 day
+}, config.authentication.jwtSecret)
 
 const USER_NOT_SAVED = 'There was a problem saving the user'
 const USER_EXISTS_ERROR = 'This username already exists'
@@ -20,7 +17,9 @@ const INCORRECT_PASSWORD = 'Password incorrect'
 
 module.exports = {
   async register(req, res, next) {
-    const { username, password, first_name, last_name } = req.body
+    const {
+      username, password, firstName, lastName
+    } = req.body
 
     const user = await UserService.getByUsername(username)
 
@@ -32,18 +31,20 @@ module.exports = {
       }
     } else {
       try {
-        const newUser = await UserService.create({ username, password, first_name, last_name })
+        const newUser = await UserService.create({
+          username, password, firstName, lastName
+        })
 
         if (!newUser) throw new ErrorHandler(403, USER_NOT_SAVED, __filename)
 
         res.status(200).json(newUser)
       } catch (err) {
-          next(err)
+        next(err)
       }
     }
   },
   async login(req, res, next) {
-    const { username, password } = req.body;
+    const { username, password } = req.body
 
     const user = await UserService.getByUsername(username)
 
@@ -65,7 +66,7 @@ module.exports = {
           token: jwtSignUser(user)
         })
       } catch (err) {
-          next(err)
+        next(err)
       }
     }
   }

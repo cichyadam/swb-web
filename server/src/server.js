@@ -3,7 +3,6 @@ const bodyParser = require('body-parser')
 const cors = require('cors')
 const morgan = require('morgan')
 const helmet = require('helmet')
-const config = require('./config/config')
 const { handleError } = require('./helpers/errors/error')
 
 const app = express()
@@ -14,7 +13,7 @@ app.use(morgan('dev'))
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(
   bodyParser.json({
-    type: 'application/json',
+    type: 'application/json'
   })
 )
 app.use(cors())
@@ -26,6 +25,7 @@ require('./routes')(app)
 
 // # Handlers
 
+// eslint-disable-next-line no-unused-vars
 app.use((err, req, res, next) => {
   handleError(err, res)
 })

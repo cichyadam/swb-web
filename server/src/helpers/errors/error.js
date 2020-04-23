@@ -1,4 +1,3 @@
-
 class ErrorHandler extends Error {
   constructor(statusCode, message, file) {
     super()
@@ -12,11 +11,11 @@ const handleError = (err, res) => {
   const { statusCode, message, file } = err
 
   res.status(statusCode).json({
-    status: "error",
+    status: 'error',
     statusCode,
     message,
     stackTrace: {
-      file,
+      file
     }
   })
 }
