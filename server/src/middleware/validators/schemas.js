@@ -38,6 +38,25 @@ const schemas = {
     password: Joi.string()
       .pattern(new RegExp('^[a-zA-Z0-9]{3,30}$'))
       .required()
+  }),
+
+  blogPost: Joi.object().keys({
+    author: Joi.string()
+      .required()
+      .min(3)
+      .max(30),
+    title: Joi.string()
+      .required()
+      .min(5)
+      .max(50),
+    content: Joi.string()
+      .required()
+      .min(10)
+      .max(15000),
+    imageURL: Joi.string()
+      .required()
+      .min(5)
+      .max(50)
   })
 
 }
