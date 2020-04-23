@@ -9,31 +9,44 @@ const UserSchema = new Schema({
     type: String,
     required: true,
     index: { unique: true },
-    lowercase: true,
+    lowercase: true
   },
   password: {
-    type: String, required: true
+    type: String,
+    required: true
+  },
+  first_name: {
+    type: String,
+    required: true
+  },
+  last_name: {
+    type: String,
+    required: true
+  },
+  role: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Role'
   }
 })
 
-UserSchema.pre('save', function(next) {
+UserSchema.pre('save', function (next) {
   const user = this
 
   if (!user.isModified('password')) return next()
 
-  bcrypt.genSalt(config.authentication.salt_factor, function(err, salt) {
+  bcrypt.genSalt(config.authentication.salt_factor, (err, salt) => {
+    if (err) return next(err)
+
+    bcrypt.hash(user.password, salt, (err, hash) => {
       if (err) return next(err)
 
-      bcrypt.hash(user.password, salt, function(err, hash) {
-          if (err) return next(err)
-
-          user.password = hash
-          next()
-      })
+      user.password = hash
+      next()
+    })
   })
 })
 
-UserSchema.methods.comparePassword = async function(candidatePassword) {
+UserSchema.methods.comparePassword = async function (candidatePassword) {
   try {
     return await bcrypt.compare(candidatePassword, this.password)
   } catch (err) {
