@@ -1,4 +1,3 @@
-const Tag = require('../models/Tags/Tag.model')
 const TagService = require('../services/TagService')
 const { ErrorHandler } = require('../helpers/errors/error')
 
@@ -32,11 +31,9 @@ module.exports = {
       }
     } else {
       try {
-        const newTag = new Tag({
-          name
-        })
+        const newTag = await TagService.createTag(name)
 
-        await newTag.save().catch(() => new ErrorHandler(422, TAG_NOT_SAVED, __filename))
+        if (!newTag) throw new ErrorHandler(403, TAG_NOT_SAVED, __filename)
 
         res.status(200).json({
           newTag

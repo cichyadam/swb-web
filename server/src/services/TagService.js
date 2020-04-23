@@ -1,3 +1,4 @@
+/* eslint-disable no-return-await */
 const Tag = require('../models/Tags/Tag.model')
 
 module.exports = {
@@ -10,5 +11,10 @@ module.exports = {
       name
     })
     return tag
+  },
+  async createTag(name) {
+    const newTag = new Tag(name)
+
+    return await newTag.save()
   }
 }

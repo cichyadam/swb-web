@@ -9,7 +9,7 @@ const POST_DELETED = 'Blog post was successfully deleted'
 
 module.exports = {
   async getAllBlogPosts(req, res, next) {
-    const articles = await BlogPostService.getAllBlogPosts()
+    const articles = await BlogPostService.list()
 
     if (articles.length === 0) {
       try {
@@ -23,7 +23,7 @@ module.exports = {
   },
   async getOneBlogPost(req, res, next) {
     const { id } = req.params
-    const article = await BlogPostService.getOneBlogPost(id)
+    const article = await BlogPostService.getById(id)
     if (!article) {
       try {
         throw new ErrorHandler(404, POST_NOT_FOUND, __filename)
@@ -38,10 +38,10 @@ module.exports = {
     const {
       author, title, content, imageURL
     } = req.body
-    const article = await BlogPostService.createBlogPost(author, title, content, imageURL)
+    const article = await BlogPostService.create(author, title, content, imageURL)
     if (!article) {
       try {
-        throw new ErrorHandler(422, POST_NOT_CREATED, __filename)
+        throw new ErrorHandler(403, POST_NOT_CREATED, __filename)
       } catch (err) {
         next(err)
       }
@@ -80,10 +80,8 @@ module.exports = {
   },
   async editBlogPost(req, res, next) {
     const { id } = req.params
-    const {
-      author, title, content, imageURL
-    } = req.body
-    const article = await BlogPostService.editBlogPost(id, author, title, content, imageURL)
+    const newData = req.body
+    const article = await BlogPostService.editBlogPost(id, newData)
 
     if (!article) {
       try {

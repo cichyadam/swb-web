@@ -1,15 +1,21 @@
+/* eslint-disable no-return-await */
+/* eslint-disable consistent-return */
 const BlogPost = require('../models/BlogPosts/BlogPost.model')
 
 module.exports = {
-  async getAllBlogPosts() {
-    const articles = await BlogPost.find()
+  async list() {
+    const articles = await BlogPost
+      .find()
+      .populate('tags')
     return articles
   },
-  async getOneBlogPost(id) {
-    const article = await BlogPost.findById(id)
+  async getById(id) {
+    const article = await BlogPost
+      .findById(id)
+      .populate('tags')
     return article
   },
-  async createBlogPost(author, title, content, imageURL) {
+  async create(author, title, content, imageURL) {
     let article = new BlogPost({
       author,
       title,
@@ -19,17 +25,21 @@ module.exports = {
     article = await article.save()
     return article
   },
-  async editBlogPost(id, author, title, content, imageURL) {
-    const article = await BlogPost.findByIdAndUpdate(id, {
-      author,
-      title,
-      content,
-      imageURL,
-      updated: Date.now()
-    }, {
-      new: true
+  async updateById(id, newData) {
+    const article = await BlogPost.findById(id)
+
+    if (!article) return
+
+    // eslint-disable-next-line array-callback-return
+    Object.keys(newData).map((key) => {
+      if (key !== 'id' && key !== '_id') {
+        article[key] = newData[key]
+      }
     })
-    return article
+
+    article.updatedAt = Date.now
+
+    return await article.save()
   },
   async deleteBlogPost(id) {
     const article = await BlogPost.findByIdAndDelete(id)

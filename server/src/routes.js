@@ -1,5 +1,6 @@
 const AuthController = require('./controllers/AuthController')
 const BlogController = require('./controllers/BlogController')
+const TagController = require('./controllers/TagController')
 const TestController = require('./controllers/TestController')
 const Auth = require('./middleware/policies/Authentication')
 const Validate = require('./middleware/validators/requestValidator')
@@ -8,8 +9,7 @@ const schemas = require('./middleware/validators/schemas')
 module.exports = (app) => {
   app.post('/api/register',
     Validate(schemas.userRegister),
-    AuthController.register,
-  )
+    AuthController.register)
   app.post('/api/login',
     Validate(schemas.userLogin),
     AuthController.login)
@@ -27,14 +27,16 @@ module.exports = (app) => {
   app.post('/api/blog/:id/delete',
     Auth.authorize,
     BlogController.deleteBlogPost)
+  app.get('/api/tags',
+    TagController.getAllTags)
+  app.post('/api/tags/create',
+    Validate(schemas.tag),
+    TagController.createTag)
   app.get('/test',
     Auth.authorize,
-    TestController.test
-  )
+    TestController.test)
   app.post('/post-test',
-    TestController.list
-  )
+    TestController.list)
   app.get('/get-test',
-    TestController.update
-  )
+    TestController.update)
 }
