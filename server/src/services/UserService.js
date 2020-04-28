@@ -1,6 +1,8 @@
 /* eslint-disable consistent-return */
 /* eslint-disable no-return-await */
 const User = require('../models/Users/User.model')
+const { decamelize } = require('../helpers/decamelize')
+const { ErrorHandler } = require('../helpers/errors/error')
 
 module.exports = {
   async getByUsername(username) {
@@ -14,13 +16,13 @@ module.exports = {
   },
 
   async create(user) {
-    const NewUser = new User(user)
+    const NewUser = new User(decamelize(user))
 
     return await NewUser.save()
   },
 
   async delete(user) {
-    return await User.deleteOne(user)
+    return await User.deleteOne(decamelize(user))
   },
 
   async list() {
@@ -34,7 +36,7 @@ module.exports = {
     if (!user) return
 
     // eslint-disable-next-line array-callback-return
-    Object.keys(newData).map((key) => {
+    Object.keys(decamelize(newData)).map((key) => {
       if (key !== 'id' && key !== '_id') {
         user[key] = newData[key]
       }
