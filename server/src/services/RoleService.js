@@ -1,7 +1,7 @@
 /* eslint-disable consistent-return */
 /* eslint-disable no-return-await */
 const Role = require('../models/Users/Role.model')
-const { decamelize } = require('../helpers/decamelize')
+const { decamelize } = require('../helpers/utilities')
 
 module.exports = {
   async create(role) {

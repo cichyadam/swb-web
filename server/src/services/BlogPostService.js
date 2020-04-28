@@ -1,6 +1,6 @@
 /* eslint-disable no-return-await */
 /* eslint-disable consistent-return */
-const BlogPost = require('../models/BlogPosts/BlogPost.model')
+const BlogPost = require('../models/Blog/BlogPost.model')
 
 module.exports = {
   async list() {

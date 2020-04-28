@@ -1,8 +1,7 @@
 /* eslint-disable consistent-return */
 /* eslint-disable no-return-await */
 const User = require('../models/Users/User.model')
-const { decamelize } = require('../helpers/decamelize')
-const { ErrorHandler } = require('../helpers/errors/error')
+const { decamelize } = require('../helpers/utilities')
 
 module.exports = {
   async getByUsername(username) {
