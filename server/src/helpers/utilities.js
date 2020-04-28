@@ -1,14 +1,14 @@
 const decamelizeKeys = require('decamelize-keys')
+const camelizeKeys = require('camelize')
 
 module.exports = {
-  decamelize (object) {
+  decamelize(object) {
     return decamelizeKeys(object, '_')
   },
-  isEmpty (object) {
-    for (let key in object) {
-        if(object.hasOwnProperty(key))
-            return false
-    }
-    return true
+  camelize(object) {
+    return camelizeKeys(object)
+  },
+  isEmpty(object) {
+    return Object.keys(object).length === 0
   }
 }
