@@ -63,8 +63,8 @@ const AdminPage = ({ token, saveToken }) => {
             onChange={handleChange}
           />
         </Form.Group>
-        <Button variant="primary" type="submit">
-          Submit
+        <Button variant="dark" type="submit">
+          Login
         </Button>
         <p className="mt-4 text-danger">
           {error && error}
