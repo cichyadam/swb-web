@@ -1,7 +1,7 @@
-import api from './api';
+import api from './api'
 
 export default {
-    login(credentials) {
-        return api.post('/login', credentials);
-    },
-};
+  login(credentials) {
+    return api.post('/login', credentials)
+  }
+}

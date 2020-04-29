@@ -7,13 +7,50 @@ const Header = ({ token }) => (
   <Navbar bg="white" expand="lg">
     <Nav>
       { token && (
-        <Nav.Item>
-          <Nav.Link>
-            <Link to="/logout">
-              Logout
-            </Link>
-          </Nav.Link>
-        </Nav.Item>
+        <>
+          <Nav.Item>
+            <Nav.Link>
+              <Link to="/admin-content">
+                Content
+              </Link>
+            </Nav.Link>
+          </Nav.Item>
+          <Nav.Item>
+            <Nav.Link>
+              <Link to="/admin-blog">
+                Blog
+              </Link>
+            </Nav.Link>
+          </Nav.Item>
+          <Nav.Item>
+            <Nav.Link>
+              <Link to="/admin-gallery">
+                Gallery
+              </Link>
+            </Nav.Link>
+          </Nav.Item>
+          <Nav.Item>
+            <Nav.Link>
+              <Link to="/admin-newsletter">
+                Newsletter
+              </Link>
+            </Nav.Link>
+          </Nav.Item>
+          <Nav.Item>
+            <Nav.Link>
+              <Link to="/admin-users">
+                Users
+              </Link>
+            </Nav.Link>
+          </Nav.Item>
+          <Nav.Item>
+            <Nav.Link>
+              <Link to="/logout">
+                Logout
+              </Link>
+            </Nav.Link>
+          </Nav.Item>
+        </>
       )}
       { !token && (
         <>
