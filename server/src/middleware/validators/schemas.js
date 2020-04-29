@@ -81,6 +81,10 @@ const schemas = {
       .required()
       .min(5)
       .max(50),
+    subtitle: Joi.string()
+      .required()
+      .min(5)
+      .max(100),
     content: Joi.string()
       .required()
       .min(10)
