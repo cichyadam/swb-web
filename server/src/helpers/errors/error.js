@@ -1,3 +1,4 @@
+/* eslint-disable array-callback-return */
 class ErrorHandler extends Error {
   constructor(statusCode, message, file) {
     super()
@@ -8,12 +9,12 @@ class ErrorHandler extends Error {
 }
 
 const handleError = (err, res) => {
-  if (Array.isArray(err)) {
+  if (Array.isArray(err) || err.name) {
     res.status(500).json({
       status: 'error',
       type: 'DatabaseError',
       code: 500,
-      errors: err,
+      errors: err
     })
   } else {
     const { statusCode, message, file } = err
@@ -30,17 +31,28 @@ const handleError = (err, res) => {
 }
 
 const handleMongooseError = (errors) => {
-  const errArray = []
+  if (errors.code && errors.code === 11000) {
+    return {
+      name: 'duplicate entry',
+      field: Object.keys(errors.keyPattern)[0]
+    }
+  }
 
-  Object.keys(errors).map(field => {
-    errArray.push({
-      name: field,
-      type: errors[field].name,
-      kind: errors[field].kind
+  if (errors.errors) {
+    const errArray = []
+
+    Object.keys(errors.errors).map((field) => {
+      errArray.push({
+        name: field,
+        type: errors.errors[field].name,
+        kind: errors.errors[field].kind
+      })
     })
-  })
 
-  return errArray
+    return errArray
+  }
+
+  console.log(errors)
 }
 
 module.exports = {

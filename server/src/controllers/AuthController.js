@@ -36,7 +36,7 @@ module.exports = {
           username, password, firstName, lastName
         })
 
-        handleResponse({ user: newUser}, res)
+        handleResponse({ user: newUser }, res)
       } catch (err) {
         next(handleMongooseError(err.errors))
       }

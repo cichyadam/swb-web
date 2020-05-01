@@ -15,10 +15,10 @@ const ImageSchema = new Schema({
     required: true,
     index: { unique: true }
   },
-  collections: [{
+  collections: {
     type: Schema.Types.ObjectId,
     ref: 'Collection'
-  }],
+  },
   created_at: {
     type: Date,
     default: Date.now

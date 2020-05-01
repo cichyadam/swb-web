@@ -36,8 +36,10 @@ const schemas = {
       .max(30),
 
     password: Joi.string()
-      .pattern(new RegExp('^[a-zA-Z0-9]{3,30}$'))
+      .alphanum()
       .required()
+      .min(3)
+      .max(30)
   }),
 
   blogPost: Joi.object().keys({
@@ -64,8 +66,26 @@ const schemas = {
       .required()
       .min(3)
       .max(15)
-  })
+  }),
 
+  collection: Joi.object().keys({
+    name: Joi.string()
+      .required()
+      .min(3)
+      .max(32)
+  }),
+
+  images: Joi.array()
+    .items(Joi.object().keys({
+      title: Joi.string()
+        .required()
+        .min(3)
+        .max(32),
+      url: Joi.string()
+        .required()
+        .min(3)
+        .max(64)
+    }))
 
 }
 module.exports = schemas
