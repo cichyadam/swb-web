@@ -19,11 +19,11 @@ const ImageSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: 'Collection'
   }],
-  created_at: {
+  createdAt: {
     type: Date,
     default: Date.now
   },
-  updated_at: {
+  updatedAt: {
     type: Date,
     default: Date.now
   }

@@ -8,5 +8,10 @@ module.exports = {
     issuer: 'SkateWorldBetterAuth',
     jwtSecret: process.env.JWT_SECRET,
     salt_factor: 10
+  },
+  roles: {
+    super: 'super',
+    admin: 'admin',
+    cooperator: 'cooperator'
   }
 }

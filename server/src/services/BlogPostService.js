@@ -37,8 +37,6 @@ module.exports = {
       }
     })
 
-    article.updatedAt = Date.now
-
     return await article.save()
   },
   async deleteBlogPost(id) {
