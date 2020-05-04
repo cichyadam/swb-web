@@ -1,15 +1,14 @@
 /* eslint-disable consistent-return */
 /* eslint-disable no-return-await */
 const Role = require('../models/Users/Role.model')
-const { decamelize } = require('../helpers/decamelize')
 
 module.exports = {
   async create(role) {
-    return await Role.create(decamelize(role))
+    return await Role.create(role)
   },
 
   async delete(role) {
-    return await Role.deleteOne(decamelize(role))
+    return await Role.deleteOne(role)
   },
 
   async updateByName(oldName, newName) {
@@ -45,25 +44,5 @@ module.exports = {
   async getOneById(id) {
     return await Role.findById(id)
       .populate('permissions')
-  },
-
-  async addPermission(roleId, permissionId) {
-    const role = await Role.findById(roleId)
-
-    if (!role) return
-
-    role.permissions.push(permissionId)
-
-    return await role.save()
-  },
-
-  async removePermission(roleId, permissionId) {
-    const role = await Role.findById(roleId)
-
-    if (!role) return
-
-    role.permissions.pull(permissionId)
-
-    return await role.save()
   }
 }

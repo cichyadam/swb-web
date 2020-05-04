@@ -1,6 +1,6 @@
 const { ErrorHandler } = require('../../helpers/errors/error')
 
-const requestValidator = (schema, property) => (req, res, next) => {
+const requestValidator = (schema) => (req, res, next) => {
   const { body } = req
   const { error } = schema.validate(body)
   const valid = error === null || !error

@@ -32,7 +32,7 @@ const handleError = (err, res) => {
 const handleMongooseError = (errors) => {
   const errArray = []
 
-  Object.keys(errors).map(field => {
+  Object.keys(errors).map((field) => {
     errArray.push({
       name: field,
       type: errors[field].name,

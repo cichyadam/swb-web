@@ -2,7 +2,7 @@ const Joi = require('@hapi/joi')
 
 const schemas = {
 
-  userRegister: Joi.object().keys({
+  userCreate: Joi.object().keys({
     username: Joi.string()
       .alphanum()
       .required()
@@ -25,7 +25,38 @@ const schemas = {
       .min(2)
       .max(30),
 
-    repeat_password: Joi.ref('password')
+    role: Joi.string()
+      .alphanum()
+      .required()
+      .min(20)
+      .max(255)
+
+    // repeatPassword: Joi.ref('password')
+  }),
+
+  userUpdate: Joi.object().keys({
+    username: Joi.string()
+      .alphanum()
+      .min(3)
+      .max(30),
+
+    password: Joi.string()
+      .alphanum()
+      .required()
+      .min(3)
+      .max(30),
+
+    firstName: Joi.string()
+      .alphanum()
+      .min(2)
+      .max(30),
+
+    lastName: Joi.string()
+      .alphanum()
+      .min(2)
+      .max(30)
+
+    // repeatPassword: Joi.ref('password')
   }),
 
   userLogin: Joi.object().keys({

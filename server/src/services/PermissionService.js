@@ -1,15 +1,14 @@
 /* eslint-disable consistent-return */
 /* eslint-disable no-return-await */
 const Permission = require('../models/Users/Permission.model')
-const { decamelize } = require('../helpers/decamelize')
 
 module.exports = {
   async create(permission) {
-    return await Permission.create(decamelize(permission))
+    return await Permission.create(permission)
   },
 
   async delete(permission) {
-    return await Permission.deleteOne(decamelize(permission))
+    return await Permission.deleteOne(permission)
   },
 
   async updateByName(oldName, newName) {
