@@ -2,29 +2,8 @@
 /* eslint-disable max-len */
 /* eslint-disable consistent-return */
 /* eslint-disable no-return-await */
-const Promise = require('bluebird')
 const User = require('../models/Users/User.model')
-const { isZero } = require('../helpers/utilities/utilities')
-
-const searchQuery = async (Model, criteria, populate = '') => {
-  const queryObj = {}
-
-  if (criteria.filter) {
-    Object.keys(criteria.filter).forEach((key) => {
-      if (Array.isArray(criteria.filter[key])) {
-        queryObj[key] = { $in: criteria.filter[key] }
-      } else queryObj[key] = criteria.filter[key]
-    })
-  }
-
-  const response = await Promise.all([
-    Model.find(queryObj).limit(criteria.limit * 1).skip((criteria.page - 1) * criteria.limit).populate(populate)
-      .exec(),
-    Model.find(queryObj).countDocuments().exec()
-  ]).spread((data, count) => ({ data, count }), (err) => err)
-
-  return response
-}
+const { searchQuery } = require('../helpers/criterions/criterions')
 
 module.exports = {
   async getByUsername(username) {
