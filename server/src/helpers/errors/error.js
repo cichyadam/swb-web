@@ -1,4 +1,4 @@
-/* eslint-disable array-callback-return */
+/* eslint-disable no-console */
 class ErrorHandler extends Error {
   constructor(statusCode, message, file) {
     super()
@@ -41,11 +41,11 @@ const handleMongooseError = (errors) => {
   if (errors.errors) {
     const errArray = []
 
-    Object.keys(errors.errors).map((field) => {
+    Object.keys(errors).map((field) => {
       errArray.push({
         name: field,
-        type: errors.errors[field].name,
-        kind: errors.errors[field].kind
+        type: errors[field].name,
+        kind: errors[field].kind
       })
     })
 

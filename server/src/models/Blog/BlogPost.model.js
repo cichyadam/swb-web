@@ -33,6 +33,12 @@ const BlogPostSchema = new Schema({
   }
 })
 
+BlogPostSchema.pre('save', function (next) {
+  const blogPost = this
+  blogPost.updatedAt = Date.now
+  next()
+})
+
 const BlogPost = mongoose.model('BlogPost', BlogPostSchema)
 
 module.exports = BlogPost

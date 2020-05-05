@@ -1,24 +1,34 @@
-const RoleService = require('../services/RoleService')
+const jwt = require('jsonwebtoken')
 const UserService = require('../services/UserService')
-const PermissionService = require('../services/PermissionService')
+const { UserCriterion, Criteria } = require('../helpers/criterions/criterions')
+const { handleResponse, searchResult } = require('../helpers/resources/response')
+const { sculpt } = require('../helpers/resources/interface')
 
 module.exports = {
-  async test(req, res) {
-    res.send('Hello from Node.js app \n')
-  },
-  async list(req, res) {
-    const role = await RoleService.create({ name: 'test_role' })
-    const permission = await PermissionService.create({ name: 'EDIT_CONTENT' })
+  async test(req, res, next) {
+    const { query } = req
 
-    await RoleService.addPermission(role.id, permission.id)
-    const updatedRole = await RoleService.getOneById(role.id)
+    const criteria = Criteria(query, UserCriterion)
 
-    res.json(updatedRole)
+    try {
+      const result = await UserService.list(criteria)
+
+      searchResult(res, criteria, result, ['username', 'role.name'])
+    } catch (err) {
+      next(err)
+    }
   },
   async update(req, res) {
-    await UserService.updateById('5ea1b7d84054c7992da8e11c', { username: 'latest' })
+    const { token } = req.query
+    const { role } = req.body
 
-    const test = await UserService.getById('5ea1b7d84054c7992da8e11c')
+    const decoded = jwt.decode(token)
+
+    if (!role) res.status(403).send('Missing role')
+
+    await UserService.assignRole(decoded.sub, role)
+
+    const test = await UserService.getById(decoded.sub)
 
     res.json(test)
   }

@@ -2,7 +2,7 @@ const ImageService = require('../services/ImageService')
 const CollectionService = require('../services/CollectionService')
 const { handleMongooseError } = require('../helpers/errors/error')
 const { handleResponse } = require('../helpers/resources/response')
-const { toArray } = require('../helpers/utilities')
+const { toArray } = require('../helpers/utilities/utilities')
 
 module.exports = {
   async listImages(req, res, next) {

@@ -17,24 +17,35 @@ const UserSchema = new Schema({
     type: String,
     required: true
   },
-  first_name: {
+  firstName: {
     type: String,
     required: true
   },
-  last_name: {
+  lastName: {
     type: String,
     required: true
   },
   role: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Role'
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now
+  },
+  updatedAt: {
+    type: Date,
+    default: Date.now
   }
 })
 
 UserSchema.pre('save', function (next) {
   const user = this
+  user.updatedAt = Date.now
 
-  if (!user.isModified('password')) return next()
+  if (!user.isModified('password')) {
+    return next()
+  }
 
   bcrypt.genSalt(config.authentication.salt_factor, (err, salt) => {
     if (err) return next(err)
