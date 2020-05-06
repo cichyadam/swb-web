@@ -1,3 +1,5 @@
+/* eslint-disable array-callback-return */
+/* eslint-disable consistent-return */
 /* eslint-disable no-underscore-dangle */
 import React, { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
@@ -5,131 +7,15 @@ import moment from 'moment'
 import { Redirect } from 'react-router-dom'
 
 import {
-  Row, Col, Modal, Button, Table, Form, Alert
+  Row, Col, Button, Table, Alert
 } from 'react-bootstrap'
 
 import BaseSection from '../../../components/BaseSection'
+import BlogModal from './BlogModal'
+import ConfirmModal from './ConfirmModal'
 
 import BlogService from '../../../services/BlogService'
-
-const BlogModal = ({
-  showModal, closeModal, blogPost, handleSave, handleChange, handleCreate, error
-}) => (
-  <Modal
-    show={showModal}
-    size="lg"
-    aria-labelledby="contained-modal-title-vcenter"
-    centered
-  >
-    <Modal.Header>
-      <Modal.Title id="contained-modal-title-vcenter">
-        {blogPost && ('Edit')}
-        {!blogPost && ('Create')}
-        {' '}
-        blog post
-      </Modal.Title>
-    </Modal.Header>
-    <Modal.Body>
-      <Form>
-        <Form.Group controlId="formBasicAuthor">
-          <Form.Label>Author</Form.Label>
-          <Form.Control
-            type="text"
-            placeholder="Author"
-            defaultValue={blogPost && blogPost.author}
-            disabled
-          />
-        </Form.Group>
-        <Form.Group controlId="formBasicTitle">
-          <Form.Label>Title</Form.Label>
-          <Form.Control
-            type="text"
-            name="title"
-            placeholder="Title"
-            defaultValue={
-              blogPost && blogPost.title
-            }
-            onChange={handleChange}
-          />
-        </Form.Group>
-        <Form.Group controlId="formBasicSubtitle">
-          <Form.Label>Subtitle</Form.Label>
-          <Form.Control
-            type="text"
-            name="subtitle"
-            placeholder="Subtitle"
-            defaultValue={
-              blogPost && blogPost.subtitle
-            }
-            onChange={handleChange}
-          />
-        </Form.Group>
-        <Form.Group controlId="formBasicContent">
-          <Form.Label>Content</Form.Label>
-          <Form.Control
-            as="textarea"
-            rows="10"
-            type="text"
-            name="content"
-            placeholder="Content"
-            defaultValue={
-              blogPost && blogPost.content
-            }
-            onChange={handleChange}
-          />
-        </Form.Group>
-      </Form>
-      {error && (<p className="text-danger">{error}</p>)}
-    </Modal.Body>
-    <Modal.Footer>
-      {blogPost && (
-        <Button
-          variant="success"
-          onClick={() => handleSave(blogPost._id)}
-        >
-          Save
-        </Button>
-      )}
-      {!blogPost && (
-        <Button
-          variant="success"
-          onClick={handleCreate}
-        >
-          Create
-        </Button>
-      )}
-      <Button variant="danger" onClick={closeModal}>Close</Button>
-    </Modal.Footer>
-  </Modal>
-)
-
-const ConfirmModal = ({
-  showConfirmModal, closeConfirmModal, handleDelete, postId
-}) => (
-  <Modal
-    show={showConfirmModal}
-    size="lg"
-    aria-labelledby="contained-modal-title-vcenter"
-    centered
-  >
-    <Modal.Header>
-      <Modal.Title id="contained-modal-title-vcenter">
-        Confrim your action
-      </Modal.Title>
-    </Modal.Header>
-    <Modal.Body>
-      <h4>Are you sure?</h4>
-      <p>
-        Once you will delete this blog post it will be removed forever. You
-        can not undo this action. I have warned you.
-      </p>
-    </Modal.Body>
-    <Modal.Footer>
-      <Button variant="success" onClick={() => handleDelete(postId)}>Delete</Button>
-      <Button variant="danger" onClick={closeConfirmModal}>Close</Button>
-    </Modal.Footer>
-  </Modal>
-)
+import TagService from '../../../services/TagService'
 
 const formatDate = (date) => moment(date).format('DD/MM/YY')
 
@@ -138,27 +24,19 @@ const AdminBlog = ({ token }) => {
   const [showConfirmModal, setShowConfirmModal] = useState(false)
   const [showAlert, setShowAlert] = useState(true)
   const [blogPosts, setBlogPosts] = useState()
+  const [tags, setTags] = useState()
   const [blogPost, setBlogPost] = useState()
+
+  // TO DO: save everyhing below to blogPost state
   const [author, setAuthor] = useState()
   const [title, setTitle] = useState()
   const [subtitle, setSubtitle] = useState()
   const [content, setContent] = useState()
   const [imageUrl, setImageUrl] = useState()
+  const [activeTags, setActiveTags] = useState([])
 
   const [message, setMessage] = useState()
   const [error, setError] = useState()
-
-  const handleChange = (event) => {
-    if (event.target.name === 'title') {
-      setTitle(event.target.value)
-    }
-    if (event.target.name === 'subtitle') {
-      setSubtitle(event.target.value)
-    }
-    if (event.target.name === 'content') {
-      setContent(event.target.value)
-    }
-  }
 
   const handleList = async () => {
     try {
@@ -178,6 +56,69 @@ const AdminBlog = ({ token }) => {
     }
   }
 
+  const handleTags = async () => {
+    try {
+      const response = (await TagService.list()).data
+      setTags(response)
+    } catch (err) {
+      setMessage(err.response.data.message)
+    }
+  }
+
+  const handleRemoveTag = (id) => {
+    const tagToDelete = activeTags.map((tag) => {
+      if (tag._id === id) {
+        return tag
+      }
+    }).filter((tag) => {
+      if (tag !== undefined) {
+        return tag
+      }
+    })
+    const filteredTags = activeTags.map((tag) => {
+      const isRemoved = tag._id === tagToDelete._id
+      if (isRemoved) {
+        return tag
+      }
+    })
+    console.log(filteredTags)
+  }
+
+  const filterTags = (isDisabled) => {
+    const filteredTags = tags.map((tag) => {
+      const isSelected = activeTags.some((activeTag) => tag._id === activeTag._id)
+
+      if (isSelected) {
+        return {
+          ...tag,
+          isDisabled
+        }
+      }
+      return tag
+    })
+    setTags(filteredTags)
+  }
+
+  const handleChange = (event) => {
+    if (event.target.name === 'title') {
+      setTitle(event.target.value)
+    }
+    if (event.target.name === 'subtitle') {
+      setSubtitle(event.target.value)
+    }
+    if (event.target.name === 'content') {
+      setContent(event.target.value)
+    }
+    if (event.target.name === 'tags') {
+      const tagIndex = event.target.selectedIndex
+      const _id = event.target[tagIndex].id
+      const name = event.target.value
+      setActiveTags(activeTags.concat({ _id, name }))
+      filterTags(true)
+      console.log(tags)
+    }
+  }
+
   const handleOpen = (id) => {
     setShowModal(true)
     handleOnePost(id)
@@ -185,6 +126,8 @@ const AdminBlog = ({ token }) => {
 
   const handleClose = () => {
     setBlogPost()
+    setActiveTags([])
+    filterTags(false)
     setShowModal(false)
   }
 
@@ -250,6 +193,7 @@ const AdminBlog = ({ token }) => {
   }
 
   useEffect(() => {
+    handleTags()
     handleList()
     // This will be removed once the image upload will be done
     setImageUrl('image.png')
@@ -277,13 +221,16 @@ const AdminBlog = ({ token }) => {
               Create Blog Post
             </Button>
             <BlogModal
+              activeTags={activeTags}
               blogPost={blogPost}
+              error={error}
+              tags={tags}
               showModal={showModal}
               closeModal={handleClose}
               handleCreate={handleCreate}
               handleSave={handleSave}
               handleChange={handleChange}
-              error={error}
+              handleRemoveTag={handleRemoveTag}
             />
           </Col>
         </Row>
@@ -373,13 +320,5 @@ BlogModal.propTypes = {
 BlogModal.defaultProps = {
   blogPost: undefined
 }
-
-ConfirmModal.propTypes = {
-  showConfirmModal: PropTypes.bool.isRequired,
-  closeConfirmModal: PropTypes.func.isRequired,
-  handleDelete: PropTypes.func.isRequired,
-  postId: PropTypes.string.isRequired
-}
-
 
 export default AdminBlog
