@@ -42,7 +42,6 @@ const schemas = {
 
     password: Joi.string()
       .alphanum()
-      .required()
       .min(3)
       .max(30),
 
@@ -99,7 +98,7 @@ const schemas = {
       .max(15)
   }),
 
-  collection: Joi.object().keys({
+  album: Joi.object().keys({
     name: Joi.string()
       .required()
       .min(3)
@@ -116,7 +115,13 @@ const schemas = {
         .required()
         .min(3)
         .max(64)
-    }))
+    })),
+
+  imageUpdate: Joi.object().keys({
+    title: Joi.string()
+      .min(3)
+      .max(32)
+  })
 
 }
 module.exports = schemas

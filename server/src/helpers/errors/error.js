@@ -9,7 +9,7 @@ class ErrorHandler extends Error {
 }
 
 const handleError = (err, res) => {
-  if (Array.isArray(err) || err.name) {
+  if (Array.isArray(err) || err.errorName) {
     res.status(500).json({
       status: 'error',
       type: 'DatabaseError',
@@ -33,7 +33,7 @@ const handleError = (err, res) => {
 const handleMongooseError = (errors) => {
   if (errors.code && errors.code === 11000) {
     return {
-      name: 'duplicate entry',
+      errorName: 'duplicate entry',
       field: Object.keys(errors.keyPattern)[0]
     }
   }

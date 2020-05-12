@@ -32,11 +32,30 @@ module.exports = {
   },
   UserCriterion: (query, reduce = true) => {
     const schema = {
-      _id: query.ids ? isUrlArray(query.ids) ? toArray(query.ids) : query.ids : null,
+      _id: query.userIds ? isUrlArray(query.userIds) ? toArray(query.userIds) : query.userIds : null,
       username: query.usernames ? isUrlArray(query.usernames) ? toArray(query.usernames) : query.usernames : null,
       firstName: query.firstNames ? isUrlArray(query.firstNames) ? toArray(query.firstNames) : query.firstNames : null,
       lastName: query.lastNames ? isUrlArray(query.lastNames) ? toArray(query.lastNames) : query.lastNames : null,
-      role: query.roles ? isUrlArray(query.roles) ? toArray(query.roles) : query.roles : null
+      role: query.roleIds ? isUrlArray(query.roleIds) ? toArray(query.roleIds) : query.roleIds : null
+    }
+
+    if (reduce) return removeEmpty(schema)
+    return schema
+  },
+  AlbumCriterion: (query, reduce = true) => {
+    const schema = {
+      _id: query.albumIds ? isUrlArray(query.albumIds) ? toArray(query.albumIds) : query.albumIds : null,
+      name: query.names ? isUrlArray(query.names) ? toArray(query.names) : query.names : null
+    }
+
+    if (reduce) return removeEmpty(schema)
+    return schema
+  },
+  ImageCriterion: (query, reduce = true) => {
+    const schema = {
+      _id: query.imageIds ? isUrlArray(query.imageIds) ? toArray(query.imageIds) : query.imageIds : null,
+      title: query.titles ? isUrlArray(query.titles) ? toArray(query.titles) : query.titles : null,
+      album: query.albumIds ? isUrlArray(query.albumIds) ? toArray(query.albumIds) : query.albumIds : null
     }
 
     if (reduce) return removeEmpty(schema)
