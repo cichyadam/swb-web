@@ -3,23 +3,29 @@ const mongoose = require('mongoose')
 
 const { Schema } = mongoose
 
-const CollectionSchema = new Schema({
+const AlbumSchema = new Schema({
   name: {
     type: String,
     required: true,
     index: { unique: true },
     lowercase: true
   },
-  created_at: {
+  createdAt: {
     type: Date,
     default: Date.now
   },
-  updated_at: {
+  updatedAt: {
     type: Date,
     default: Date.now
   }
 })
 
-const Collection = mongoose.model('Collection', CollectionSchema)
+AlbumSchema.pre('save', function (next) {
+  const col = this
+  col.updatedAt = Date.now
+  next()
+})
 
-module.exports = Collection
+const Album = mongoose.model('Album', AlbumSchema)
+
+module.exports = Album

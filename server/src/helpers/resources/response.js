@@ -1,3 +1,4 @@
+/* eslint-disable radix */
 const { sculpt } = require('./interface')
 
 const handleResponse = (data, res) => {
@@ -11,8 +12,8 @@ const searchResult = (res, criteria, result, keysArray) => {
   const obj = {
     criteria: criteria.filter,
     total: result.count,
-    limit: criteria.limit,
-    page: criteria.page,
+    limit: parseInt(criteria.limit),
+    page: parseInt(criteria.page),
     data: sculpt(result.data, keysArray)
   }
 

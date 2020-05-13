@@ -8,6 +8,7 @@ const { handleResponse, searchResult } = require('../helpers/resources/response'
 const { TUser } = require('../helpers/transforms/transforms')
 const { UserCriterion, Criteria } = require('../helpers/criterions/criterions')
 const { sculpt } = require('../helpers/resources/interface')
+const { isIdValidObjectId } = require('../helpers/utilities/utilities')
 
 const jwtSignUser = (user) => jwt.sign({
   iss: authentication.issuer,
@@ -36,7 +37,7 @@ module.exports = {
       try {
         const newUser = await UserService.create(tUser)
 
-        handleResponse({ user: sculpt(newUser) }, res)
+        handleResponse({ user: sculpt(newUser, ['username', 'firstName', 'lastName', 'role']) }, res)
       } catch (err) {
         next(handleMongooseError(err.errors))
       }
@@ -76,7 +77,11 @@ module.exports = {
     const { params, body } = req
 
     try {
-      const response = await UserService.updateById(params.id, body)
+      if (!isIdValidObjectId(params.userId)) throw new ErrorHandler(403, 'invalid document id passed as a parameter', __filename)
+
+      const tUser = TUser(body)
+
+      const response = await UserService.updateById(params.userId, tUser)
 
       if (!response) throw new ErrorHandler(500, 'User not found', __filename)
 
@@ -86,15 +91,15 @@ module.exports = {
     }
   },
   async delete(req, res, next) {
-    const isPermitted = await Permissions.require(req, roles.super, next)
-
-    if (!isPermitted) {
-      next(new ErrorHandler(403, 'Missing required permission', __filename))
-      return
-    }
+    const { userId } = req.params
 
     try {
-      const response = await UserService.delete({ _id: req.query.id })
+      const isPermitted = await Permissions.require(req, roles.super, next)
+      if (!isPermitted) throw new ErrorHandler(403, 'Missing required permission', __filename)
+
+      if (!isIdValidObjectId(userId)) throw new ErrorHandler(403, 'invalid document id passed as a parameter', __filename)
+
+      const response = await UserService.delete(userId)
 
       handleResponse(response, res)
     } catch (err) {
@@ -114,13 +119,13 @@ module.exports = {
       next(err)
     }
   },
-  async get(req, res, next) {
-    const { id } = req.params
+  async getOneUser(req, res, next) {
+    const { userId } = req.params
 
     try {
-      const user = await UserService.getById(id)
+      const user = await UserService.getById(userId)
 
-      handleResponse(user, res)
+      handleResponse({ user: sculpt(user) }, res)
     } catch (err) {
       next(err)
     }

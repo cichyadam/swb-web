@@ -15,10 +15,10 @@ const ImageSchema = new Schema({
     required: true,
     index: { unique: true }
   },
-  collections: [{
+  album: {
     type: Schema.Types.ObjectId,
-    ref: 'Collection'
-  }],
+    ref: 'Album'
+  },
   createdAt: {
     type: Date,
     default: Date.now
@@ -28,6 +28,13 @@ const ImageSchema = new Schema({
     default: Date.now
   }
 })
+
+ImageSchema.pre('save', function (next) {
+  const image = this
+  image.updatedAt = Date.now
+  next()
+})
+
 
 const Image = mongoose.model('Image', ImageSchema)
 

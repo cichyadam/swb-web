@@ -22,8 +22,8 @@ module.exports = {
     return await NewUser.save()
   },
 
-  async delete(user) {
-    return await User.deleteOne(user)
+  async delete(userId) {
+    return await User.deleteOne({ _id: userId })
   },
 
   async list(criteria) {

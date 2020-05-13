@@ -2,18 +2,23 @@ const jwt = require('jsonwebtoken')
 const UserService = require('../services/UserService')
 const { UserCriterion, Criteria } = require('../helpers/criterions/criterions')
 const { handleResponse, searchResult } = require('../helpers/resources/response')
+const { ErrorHandler, handleMongooseError } = require('../helpers/errors/error')
 const { sculpt } = require('../helpers/resources/interface')
+const { toArray, isIdValidObjectId } = require('../helpers/utilities/utilities')
 
 module.exports = {
   async test(req, res, next) {
-    const { query } = req
-
-    const criteria = Criteria(query, UserCriterion)
+    res.json(req.body)
+  },
+  async testTwo(req, res, next) {
+    const { id } = req.params
 
     try {
-      const result = await UserService.list(criteria)
+      const isIdValid = isIdValidObjectId(id)
 
-      searchResult(res, criteria, result, ['username', 'role.name'])
+      if (!isIdValid) throw new ErrorHandler(403, 'Invalid id passed in params', __filename)
+
+      handleResponse({ message: 'OK' }, res)
     } catch (err) {
       next(err)
     }
