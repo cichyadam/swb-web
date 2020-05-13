@@ -226,7 +226,7 @@ const AdminBlog = ({ token }) => {
       <Col lg={12}>
         <Row>
           <Col lg={12}>
-            <Button onClick={handleOpen} variant="dark">
+            <Button onClick={handleOpen}>
               Create Blog Post
             </Button>
             <BlogModal
@@ -272,7 +272,6 @@ const AdminBlog = ({ token }) => {
                     <td className="d-flex justify-content-center">
                       <>
                         <Button
-                          variant="dark"
                           className="mr-4"
                           onClick={() => handleOpen(post._id)}
                         >

@@ -3,9 +3,7 @@ import React from 'react'
 import { Row, Col, Button } from 'react-bootstrap'
 import { Link } from 'react-router-dom/'
 
-import {
-  FaBlog, FaImages, FaRegFileAlt, FaEnvelopeOpenText, FaUserCog
-} from 'react-icons/fa'
+import { FaBlog, FaImages, FaEnvelopeOpenText } from 'react-icons/fa'
 
 import BaseSection from '../../../components/BaseSection'
 
@@ -18,16 +16,6 @@ const AdminPanel = () => (
     </Col>
     <Col lg={12} className="my-5 py-5">
       <Row>
-        <Col lg={4}>
-          <Link to="/admin-content">
-            <Button variant="dark" className="d-flex flex-column align-items-center mx-auto w-100">
-              <FaRegFileAlt size={60} className="my-2" />
-              <p className="m-4">
-                Edit Content
-              </p>
-            </Button>
-          </Link>
-        </Col>
         <Col lg={4}>
           <Link to="/admin-blog">
             <Button variant="dark" className="d-flex flex-column align-items-center mx-auto w-100">
@@ -48,24 +36,12 @@ const AdminPanel = () => (
             </Button>
           </Link>
         </Col>
-      </Row>
-      <Row className="py-5">
         <Col lg={4}>
           <Link to="/admin-newsletter">
             <Button variant="dark" className="d-flex flex-column align-items-center mx-auto w-100">
               <FaEnvelopeOpenText size={60} className="my-2" />
               <p className="m-4">
                 Send Newsletter
-              </p>
-            </Button>
-          </Link>
-        </Col>
-        <Col lg={4}>
-          <Link to="/admin-users">
-            <Button variant="dark" className="d-flex flex-column align-items-center mx-auto w-100">
-              <FaUserCog size={60} className="my-2" />
-              <p className="m-4">
-                Manage users
               </p>
             </Button>
           </Link>

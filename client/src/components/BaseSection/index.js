@@ -28,7 +28,7 @@ BaseSection.propTypes = {
 
 BaseSection.defaultProps = {
   children: undefined,
-  variant: 'white',
+  variant: undefined,
   fullScreen: false
 }
 

@@ -78,7 +78,6 @@ const BlogModal = ({
         </Form.Group>
         {activeTags && activeTags.map((activeTag) => (
           <Button
-            variant="dark"
             key={activeTag._id}
             className="m-2"
             onClick={() => handleRemoveTag(activeTag._id)}
