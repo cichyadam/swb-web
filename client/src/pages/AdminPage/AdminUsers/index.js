@@ -57,7 +57,7 @@ const AdminUsers = ({ token }) => {
     <BaseSection fullScreen>
       <Col lg={12}>
         <div className="mx-auto d-flex flex-column align-items-center">
-          <h2>Create user accounts with different roles and privileges</h2>
+          <h2>Create user accounts</h2>
         </div>
       </Col>
       <Col lg={4} className="mx-auto">
@@ -98,8 +98,8 @@ const AdminUsers = ({ token }) => {
               onChange={handleChange}
             />
           </Form.Group>
-          <Button variant="dark" type="submit">
-            Register
+          <Button variant="success" type="submit">
+            Create
           </Button>
           <p className="mt-4 text-danger">
             {error && error}

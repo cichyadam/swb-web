@@ -22,6 +22,7 @@ const formatDate = (date) => moment(date).format('DD/MM/YY')
 const AdminBlog = ({ token }) => {
   const [showModal, setShowModal] = useState(false)
   const [showConfirmModal, setShowConfirmModal] = useState(false)
+  // eslint-disable-next-line no-unused-vars
   const [showAlert, setShowAlert] = useState(true)
   const [blogPosts, setBlogPosts] = useState()
   const [tags, setTags] = useState()
@@ -70,7 +71,6 @@ const AdminBlog = ({ token }) => {
       if (postTags.length !== 0) {
         setActiveTags(postTags)
       }
-      filterTags(true)
     } catch (err) {
       setMessage(err.response.data.message)
     }
@@ -86,7 +86,7 @@ const AdminBlog = ({ token }) => {
   }
 
   const handleRemoveTag = (id) => {
-    const indexToDelete = activeTags.map((tag, i) => {
+    const indexToDelete = activeTags.map((tag) => {
       if (tag._id === id) {
         return {
           tag
@@ -135,7 +135,6 @@ const AdminBlog = ({ token }) => {
   }
 
   const handleSave = async (id) => {
-    handleList()
     handleClose()
     // eslint-disable-next-line no-shadow
     const tags = activeTags.map((tag) => tag._id)
@@ -150,6 +149,7 @@ const AdminBlog = ({ token }) => {
     try {
       const response = (await BlogService.edit(id, token, data)).data
       setMessage(response.message)
+      handleList()
     } catch (err) {
       setMessage(err.response.data.message)
     }
@@ -175,7 +175,6 @@ const AdminBlog = ({ token }) => {
       setError(err.response.data.message)
     }
   }
-
 
   const handleConfirmOpen = () => {
     setShowConfirmModal(true)
@@ -234,10 +233,12 @@ const AdminBlog = ({ token }) => {
               blogPost={blogPost}
               error={error}
               tags={tags}
+              token={token}
               showModal={showModal}
               closeModal={handleClose}
               handleCreate={handleCreate}
               handleSave={handleSave}
+              handleTags={handleTags}
               handleChange={handleChange}
               handleRemoveTag={handleRemoveTag}
             />
