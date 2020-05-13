@@ -24,6 +24,7 @@ const BlogModal = ({
 }) => {
   const [showTagModal, setShowTagModal] = useState(false)
   const [tagName, setTagName] = useState()
+  const [tagError, setTagError] = useState()
 
   const handleConfirmOpen = () => {
     setShowTagModal(true)
@@ -45,11 +46,11 @@ const BlogModal = ({
       name: tagName
     }
     try {
-      const response = (await TagService.create(token, data))
+      await TagService.create(token, data)
       handleConfirmClose()
       handleTags()
     } catch (err) {
-      console.log(error)
+      setTagError(err.data.message)
     }
   }
 
@@ -122,6 +123,7 @@ const BlogModal = ({
             </Button>
             <TagModal
               showTagModal={showTagModal}
+              tagError={tagError}
               closeTagModal={handleConfirmClose}
               handleTagChange={handleTagChange}
               handleTagCreate={handleTagCreate}
@@ -184,6 +186,7 @@ BlogModal.propTypes = {
   showModal: PropTypes.bool.isRequired,
   closeModal: PropTypes.func.isRequired,
   handleSave: PropTypes.func.isRequired,
+  handleTags: PropTypes.func.isRequired,
   handleCreate: PropTypes.func.isRequired,
   handleChange: PropTypes.func.isRequired,
   handleRemoveTag: PropTypes.func.isRequired,
