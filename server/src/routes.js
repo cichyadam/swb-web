@@ -35,8 +35,8 @@ module.exports = (app) => {
     Auth.authorize,
     UserController.delete)
 
-  // app.get('/api/roles',
-  //   UserController.getRoles)
+  app.get('/api/roles',
+    UserController.getRoles)
 
   app.post('/api/roles',
     UserController.createRole)

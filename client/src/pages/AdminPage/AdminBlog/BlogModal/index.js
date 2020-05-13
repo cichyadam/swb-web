@@ -50,7 +50,7 @@ const BlogModal = ({
       handleConfirmClose()
       handleTags()
     } catch (err) {
-      setTagError(err.data.message)
+      setTagError(err.response.data.message)
     }
   }
 

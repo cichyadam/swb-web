@@ -3,11 +3,11 @@ import PropTypes from 'prop-types'
 import classNames from 'classnames'
 import { Container, Row } from 'react-bootstrap'
 
-const BaseSection = ({ children, variant, fullScreen }) => (
+const BaseSection = ({ children, fullScreen }) => (
   <Container
     fluid
     className={
-      classNames(`bg-${variant}`, {
+      classNames({
         'min-vh-100': fullScreen
       })
     }
@@ -22,13 +22,11 @@ const BaseSection = ({ children, variant, fullScreen }) => (
 
 BaseSection.propTypes = {
   children: PropTypes.node,
-  variant: PropTypes.string,
   fullScreen: PropTypes.bool
 }
 
 BaseSection.defaultProps = {
   children: undefined,
-  variant: undefined,
   fullScreen: false
 }
 
