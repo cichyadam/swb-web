@@ -47,10 +47,30 @@ const AdminBlog = ({ token }) => {
     }
   }
 
+  const filterTags = (isDisabled) => {
+    const filteredTags = tags.map((tag) => {
+      const isSelected = activeTags.some((activeTag) => tag._id === activeTag._id)
+
+      if (isSelected) {
+        return {
+          ...tag,
+          isDisabled
+        }
+      }
+      return tag
+    })
+    setTags(filteredTags)
+  }
+
   const handleOnePost = async (id) => {
     try {
       const response = (await BlogService.listOne(id)).data
       setBlogPost(response)
+      const postTags = response.tags.map((tag) => tag)
+      if (postTags.length !== 0) {
+        setActiveTags(postTags)
+      }
+      filterTags(true)
     } catch (err) {
       setMessage(err.response.data.message)
     }
@@ -66,38 +86,22 @@ const AdminBlog = ({ token }) => {
   }
 
   const handleRemoveTag = (id) => {
-    const tagToDelete = activeTags.map((tag) => {
+    const indexToDelete = activeTags.map((tag, i) => {
       if (tag._id === id) {
-        return tag
-      }
-    }).filter((tag) => {
-      if (tag !== undefined) {
-        return tag
-      }
-    })
-    const filteredTags = activeTags.map((tag) => {
-      const isRemoved = tag._id === tagToDelete._id
-      if (isRemoved) {
-        return tag
-      }
-    })
-    console.log(filteredTags)
-  }
-
-  const filterTags = (isDisabled) => {
-    const filteredTags = tags.map((tag) => {
-      const isSelected = activeTags.some((activeTag) => tag._id === activeTag._id)
-
-      if (isSelected) {
         return {
-          ...tag,
-          isDisabled
+          tag
         }
       }
-      return tag
-    })
-    setTags(filteredTags)
+    }).map((tag, i) => {
+      if (tag !== undefined) {
+        return i
+      }
+    }).filter((i) => i !== undefined)[0]
+    activeTags.splice(indexToDelete, 1)
+    setActiveTags(activeTags)
+    filterTags(false)
   }
+
 
   const handleChange = (event) => {
     if (event.target.name === 'title') {
@@ -115,7 +119,6 @@ const AdminBlog = ({ token }) => {
       const name = event.target.value
       setActiveTags(activeTags.concat({ _id, name }))
       filterTags(true)
-      console.log(tags)
     }
   }
 
@@ -134,10 +137,13 @@ const AdminBlog = ({ token }) => {
   const handleSave = async (id) => {
     handleList()
     handleClose()
+    // eslint-disable-next-line no-shadow
+    const tags = activeTags.map((tag) => tag._id)
     const data = {
       author,
       title,
       subtitle,
+      tags,
       content,
       imageUrl
     }
@@ -150,10 +156,13 @@ const AdminBlog = ({ token }) => {
   }
 
   const handleCreate = async () => {
+    // eslint-disable-next-line no-shadow
+    const tags = activeTags.map((tag) => tag._id)
     const data = {
       author,
       title,
       subtitle,
+      tags,
       content,
       imageUrl
     }
@@ -246,7 +255,8 @@ const AdminBlog = ({ token }) => {
             <Table striped bordered hover variant="dark">
               <thead>
                 <tr>
-                  <th>Date</th>
+                  <th>Date created</th>
+                  <th>Date updated</th>
                   <th>Title</th>
                   <th>Author</th>
                   <th className="text-center">Actions</th>
@@ -255,6 +265,7 @@ const AdminBlog = ({ token }) => {
               <tbody>
                 {blogPosts && blogPosts.map((post) => (
                   <tr key={post._id}>
+                    <td>{formatDate(post.createdAt)}</td>
                     <td>{formatDate(post.updatedAt)}</td>
                     <td>{post.title}</td>
                     <td>{post.author}</td>

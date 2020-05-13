@@ -31,10 +31,10 @@ const BlogPostSchema = new Schema({
     type: Date,
     default: Date.now
   },
-  tags: {
+  tags: [{
     type: Schema.Types.ObjectId,
     ref: 'Tag'
-  }
+  }]
 })
 
 BlogPostSchema.pre('save', function (next) {

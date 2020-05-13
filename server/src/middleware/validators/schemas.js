@@ -92,7 +92,8 @@ const schemas = {
     imageUrl: Joi.string()
       .required()
       .min(5)
-      .max(50)
+      .max(50),
+    tags: Joi.array()
   }),
 
   tag: Joi.object().keys({

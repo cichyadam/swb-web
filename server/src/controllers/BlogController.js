@@ -36,9 +36,9 @@ module.exports = {
   },
   async createBlogPost(req, res, next) {
     const {
-      author, title, subtitle, content, imageUrl
+      author, title, subtitle, tags, content, imageUrl
     } = req.body
-    const article = await BlogPostService.create(author, title, subtitle, content, imageUrl)
+    const article = await BlogPostService.create(author, title, subtitle, tags, content, imageUrl)
     if (!article) {
       try {
         throw new ErrorHandler(403, POST_NOT_CREATED, __filename)

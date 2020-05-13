@@ -15,11 +15,12 @@ module.exports = {
       .populate('tags')
     return article
   },
-  async create(author, title, subtitle, content, imageUrl) {
+  async create(author, title, subtitle, tags, content, imageUrl) {
     let article = new BlogPost({
       author,
       title,
       subtitle,
+      tags,
       content,
       imageUrl
     })
