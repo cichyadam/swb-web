@@ -1,3 +1,4 @@
+const path = require('path')
 const express = require('express')
 const bodyParser = require('body-parser')
 const cors = require('cors')
@@ -18,6 +19,9 @@ app.use(
 )
 app.use(cors())
 app.use(helmet())
+app.use('/static', express.static(path.join(__dirname, '/public')))
+app.set('views', 'src/views')
+app.set('view engine', 'ejs')
 
 // # Routes
 

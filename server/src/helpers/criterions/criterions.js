@@ -9,7 +9,7 @@ module.exports = {
     filter: criterion(query, reduce),
     page: query.page || 1,
     limit: query.limit || 12,
-    sort: query || 'asc'
+    sort: query.sort || 'asc'
   }),
   searchQuery: async (Model, criteria, populate = '') => {
     const queryObj = {}

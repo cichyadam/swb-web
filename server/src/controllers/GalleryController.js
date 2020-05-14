@@ -1,3 +1,6 @@
+const sharp = require('sharp')
+const { v4: uuidv4 } = require('uuid')
+const { dirs, imageHandler: imagesConfig } = require('../config/config')
 const ImageService = require('../services/ImageService')
 const AlbumService = require('../services/AlbumService')
 const { handleMongooseError, ErrorHandler } = require('../helpers/errors/error')
@@ -6,6 +9,7 @@ const { toArray, isIdValidObjectId } = require('../helpers/utilities/utilities')
 const { TAlbum, TImage } = require('../helpers/transforms/transforms')
 const { ImageCriterion, AlbumCriterion, Criteria } = require('../helpers/criterions/criterions')
 const { sculpt } = require('../helpers/resources/interface')
+const { deleteFiles } = require('../features/FsHandler')
 
 module.exports = {
   async getImage(req, res, next) {
@@ -35,27 +39,59 @@ module.exports = {
     }
   },
   async createImages(req, res, next) {
-    const tImages = TImage(req.body)
-
     try {
       // Handle upload code
+      Promise.map(req.files, async (file, i) => {
+        const imageName = `${uuidv4()}.png`
+        const fileObject = {
+          url: imageName,
+          title: req.body.title[i]
+        }
 
-      const created = await ImageService.create(tImages)
+        await Promise.map(imagesConfig.sizes, (size) => sharp(file.buffer)
+          .resize(size.width)
+          .png(size.options)
+          .toFile(size.path + imageName))
+        return fileObject
+      })
+        .then(async (data) => {
+          const tImages = TImage(data)
 
-      handleResponse(created, res)
+          const inserted = await ImageService.create(tImages)
+
+          handleResponse(sculpt(inserted), res)
+        })
     } catch (err) {
       next(handleMongooseError(err))
     }
   },
   async deleteImages(req, res, next) {
-    const { imageIds } = req.query
+    const { query } = req
 
     try {
-      const deleted = await ImageService.delete(toArray(imageIds))
+      const criteria = Criteria(query, ImageCriterion)
 
-      handleResponse(deleted, res)
+      const imagesToDelete = await ImageService.list(criteria)
+
+      if (imagesToDelete.count === 0) throw new ErrorHandler(401, 'No images found', __filename)
+
+      const urlsToDelete = imagesToDelete.data.map((image) => image.url)
+      const paths = [`${dirs.images}/full/`, `${dirs.images}/medium/`, `${dirs.images}/small/`]
+      const filesToDelete = urlsToDelete.map((url) => paths.map((filePath) => filePath + url)).flat()
+
+      deleteFiles(filesToDelete, async (err) => {
+        if (err) {
+          throw ErrorHandler(403, err, __filename)
+        } else {
+          const deleted = await ImageService.delete(imagesToDelete.data.map((image) => image.id))
+
+          handleResponse({
+            images: deleted
+          }, res)
+        }
+      })
     } catch (err) {
-      next(handleMongooseError(err))
+      next(err)
     }
   },
   async moveImages(req, res, next) {
@@ -81,7 +117,7 @@ module.exports = {
 
       const tImage = TImage(req.body)
 
-      const updated = ImageService.updateById(tImage)
+      const updated = ImageService.updateById(imageId, tImage)
 
       handleResponse(sculpt(updated), res)
     } catch (err) {
@@ -149,18 +185,43 @@ module.exports = {
       const albumDelete = await AlbumService.deleteMany(albumIds)
 
       if (isDeepDelete) {
-        const imageDelete = await ImageService.deleteByAlbums(albumIds)
+        const criteria = Criteria({
+          albumIds,
+          limit: 1000
+        }, ImageCriterion)
 
-        handleResponse({
-          albumDelete,
-          imageDelete
-        }, res)
+        const imagesToDelete = await ImageService.list(criteria)
+
+        if (imagesToDelete.count === 0) {
+          handleResponse({
+            album: albumDelete,
+            images: '0 images found in the album'
+          }, res)
+          return
+        }
+
+        const urlsToDelete = imagesToDelete.data.map((image) => image.url)
+        const paths = [`${dirs.images}/full/`, `${dirs.images}/medium/`, `${dirs.images}/small/`]
+        const filesToDelete = urlsToDelete.map((url) => paths.map((filePath) => filePath + url)).flat()
+
+        deleteFiles(filesToDelete, async (err) => {
+          if (err) {
+            throw ErrorHandler(403, err, __filename)
+          } else {
+            const deleted = await ImageService.delete(imagesToDelete.data.map((image) => image.id))
+
+            handleResponse({
+              album: albumDelete,
+              images: deleted
+            }, res)
+          }
+        })
       } else {
         const imageUpdate = await ImageService.updateAlbum(albumIds)
 
         handleResponse({
-          albumDelete,
-          imageUpdate
+          album: albumDelete,
+          images: imageUpdate
         }, res)
       }
     } catch (err) {
