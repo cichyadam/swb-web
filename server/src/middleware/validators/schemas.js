@@ -81,6 +81,10 @@ const schemas = {
       .required()
       .min(5)
       .max(50),
+    subtitle: Joi.string()
+      .required()
+      .min(5)
+      .max(100),
     content: Joi.string()
       .required()
       .min(10)
@@ -88,7 +92,8 @@ const schemas = {
     imageUrl: Joi.string()
       .required()
       .min(5)
-      .max(50)
+      .max(50),
+    tags: Joi.array()
   }),
 
   tag: Joi.object().keys({

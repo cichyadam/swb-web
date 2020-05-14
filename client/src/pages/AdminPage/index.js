@@ -5,6 +5,8 @@ import PropTypes from 'prop-types'
 import AuthService from '../../services/AuthService'
 import BaseSection from '../../components/BaseSection'
 
+import AdminPanel from './AdminPanel'
+
 const AdminPage = ({ token, saveToken }) => {
   const [username, setUsername] = useState()
   const [password, setPassword] = useState()
@@ -26,7 +28,7 @@ const AdminPage = ({ token, saveToken }) => {
     }
 
     try {
-      const response = (await AuthService.login(user)).data
+      const response = (await AuthService.login(user)).data.data
       const authToken = response.token
       sessionStorage.setItem('token', authToken)
       saveToken(authToken)
@@ -37,12 +39,7 @@ const AdminPage = ({ token, saveToken }) => {
 
   if (token) {
     return (
-      <BaseSection fullScreen>
-        <div className="mx-auto d-flex flex-column align-items-center">
-          <h2>Login successful</h2>
-          <h2>Welcome to the Admin Panel!</h2>
-        </div>
-      </BaseSection>
+      <AdminPanel />
     )
   }
   return (
@@ -66,8 +63,8 @@ const AdminPage = ({ token, saveToken }) => {
             onChange={handleChange}
           />
         </Form.Group>
-        <Button variant="primary" type="submit">
-          Submit
+        <Button variant="dark" type="submit">
+          Login
         </Button>
         <p className="mt-4 text-danger">
           {error && error}

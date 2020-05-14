@@ -11,11 +11,15 @@ const BlogPostSchema = new Schema({
     type: String,
     required: true
   },
+  subtitle: {
+    type: String,
+    required: true
+  },
   content: {
     type: String,
     required: true
   },
-  imageURL: {
+  imageUrl: {
     type: String,
     required: true
   },
@@ -27,10 +31,10 @@ const BlogPostSchema = new Schema({
     type: Date,
     default: Date.now
   },
-  tags: {
+  tags: [{
     type: Schema.Types.ObjectId,
     ref: 'Tag'
-  }
+  }]
 })
 
 BlogPostSchema.pre('save', function (next) {

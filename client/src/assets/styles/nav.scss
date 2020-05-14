@@ -1,0 +1,15 @@
+nav {
+  background-color: $dark-grey !important;
+  display: flex;
+
+  a {
+    color: $light-grey !important;
+    transition: all ease-out .5s;
+    &:hover {
+      color: $blue !important;
+      text-decoration: none;
+    }
+
+  }
+
+}

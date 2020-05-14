@@ -13,7 +13,7 @@ module.exports = {
     return tag
   },
   async createTag(name) {
-    const newTag = new Tag(name)
+    const newTag = new Tag({ name })
 
     return await newTag.save()
   }

@@ -36,9 +36,9 @@ module.exports = {
   },
   async createBlogPost(req, res, next) {
     const {
-      author, title, content, imageURL
+      author, title, subtitle, tags, content, imageUrl
     } = req.body
-    const article = await BlogPostService.create(author, title, content, imageURL)
+    const article = await BlogPostService.create(author, title, subtitle, tags, content, imageUrl)
     if (!article) {
       try {
         throw new ErrorHandler(403, POST_NOT_CREATED, __filename)
@@ -81,7 +81,7 @@ module.exports = {
   async editBlogPost(req, res, next) {
     const { id } = req.params
     const newData = req.body
-    const article = await BlogPostService.editBlogPost(id, newData)
+    const article = await BlogPostService.updateById(id, newData)
 
     if (!article) {
       try {

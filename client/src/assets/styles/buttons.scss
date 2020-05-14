@@ -1,0 +1,30 @@
+.btn-dark {
+  color: $light-white !important;
+  background-color: $dark-grey !important;
+  border-color: $dark-grey !important;
+
+  transition: all ease-out .5s;
+
+  &:hover {
+    color: $light-grey;
+  }
+
+}
+
+.btn-danger {
+  color: $light-white !important;
+  background-color: $danger !important;
+  border-color: $danger !important;
+}
+
+.btn-success {
+  color: $light-white !important;
+  background-color: $success !important;
+  border-color: $success !important;
+}
+
+.btn-primary {
+  color: $light-white !important;
+  background-color: $blue !important;
+  border-color: $blue !important;
+}

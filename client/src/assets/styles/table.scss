@@ -1,0 +1,10 @@
+.table-dark {
+  color: $light-white !important;
+  background-color: $dark-grey !important;
+}
+
+.table-dark th,
+.table-dark td,
+.table-dark thead th {
+  border-color: $dark-grey !important;
+}

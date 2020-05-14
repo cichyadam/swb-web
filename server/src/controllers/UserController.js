@@ -130,6 +130,16 @@ module.exports = {
       next(err)
     }
   },
+  async getRoles(req, res, next) {
+    try {
+      // eslint-disable-next-line no-shadow
+      const roles = await RoleService.list()
+
+      handleResponse({ roles }, res)
+    } catch (err) {
+      next(err)
+    }
+  },
   // This function will be deleted before production
   async createRole(req, res, next) {
     const { body } = req

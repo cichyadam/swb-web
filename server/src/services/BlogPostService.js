@@ -15,12 +15,14 @@ module.exports = {
       .populate('tags')
     return article
   },
-  async create(author, title, content, imageURL) {
+  async create(author, title, subtitle, tags, content, imageUrl) {
     let article = new BlogPost({
       author,
       title,
+      subtitle,
+      tags,
       content,
-      imageURL
+      imageUrl
     })
     article = await article.save()
     return article
@@ -36,6 +38,8 @@ module.exports = {
         article[key] = newData[key]
       }
     })
+
+    article.updatedAt = Date.now()
 
     return await article.save()
   },
