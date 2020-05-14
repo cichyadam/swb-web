@@ -6,6 +6,7 @@ const GalleryController = require('./controllers/GalleryController')
 const Auth = require('./middleware/policies/Authentication')
 const Validate = require('./middleware/validators/requestValidator')
 const schemas = require('./middleware/validators/schemas')
+const upload = require('./middleware/upload/upload')
 
 module.exports = (app) => {
   // USER CONTROL ENDPOINTS
@@ -84,7 +85,7 @@ module.exports = (app) => {
 
   app.post('/api/images',
     Auth.authorize,
-    Validate(schemas.images),
+    upload.array('images', 12),
     GalleryController.createImages)
 
   app.delete('/api/images',

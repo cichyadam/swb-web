@@ -23,9 +23,9 @@ module.exports = {
     return schema
   },
 
-  TImage: (body, reduce = true) => {
+  TImage: function TImage(body, reduce = true) {
     if (Array.isArray(body)) {
-      const array = body.map((image) => this.TImage(image, reduce))
+      const array = body.map((image) => TImage(image, reduce))
 
       return array
     }
