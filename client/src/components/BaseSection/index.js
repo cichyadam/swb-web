@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import classNames from 'classnames'
 import { Container, Row } from 'react-bootstrap'
 
-const BaseSection = ({ children, fullScreen }) => (
+const BaseSection = ({ children, fullScreen, fluid }) => (
   <Container
     fluid
     className={
@@ -12,7 +12,7 @@ const BaseSection = ({ children, fullScreen }) => (
       })
     }
   >
-    <Container>
+    <Container fluid={fluid}>
       <Row className="py-5">
         {children}
       </Row>
@@ -22,12 +22,14 @@ const BaseSection = ({ children, fullScreen }) => (
 
 BaseSection.propTypes = {
   children: PropTypes.node,
-  fullScreen: PropTypes.bool
+  fullScreen: PropTypes.bool,
+  fluid: PropTypes.bool
 }
 
 BaseSection.defaultProps = {
   children: undefined,
-  fullScreen: false
+  fullScreen: false,
+  fluid: false
 }
 
 export default BaseSection
