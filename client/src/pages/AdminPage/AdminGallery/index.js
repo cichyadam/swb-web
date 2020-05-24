@@ -4,7 +4,13 @@ import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import { Redirect } from 'react-router-dom'
 
-import { Row, Col, Button } from 'react-bootstrap'
+import {
+  Row,
+  Col,
+  Button,
+  Image
+} from 'react-bootstrap'
+
 import { FaFolderOpen } from 'react-icons/fa'
 
 import BaseSection from '../../../components/BaseSection'
@@ -14,6 +20,8 @@ import GalleryFilter from './GalleryFilter'
 import GalleryPreviewItem from './GalleryPreviewItem'
 
 import AlbumService from '../../../services/AlbumService'
+import ImageService from '../../../services/ImageService'
+
 import AlbumModal from './AlbumModal'
 
 
@@ -41,10 +49,28 @@ const AdminGallery = ({ token }) => {
     }
   }
 
+  const listImages = async () => {
+    try {
+      const response = (await ImageService.list(token)).data.data
+      setImages(response)
+    } catch (err) {
+      setMessage(err.response.data.message)
+    }
+  }
+
   const listOneAlbum = async (id) => {
     try {
       const response = (await AlbumService.listOne(token, id)).data.data
       setAlbum(response)
+    } catch (err) {
+      setMessage(err.response.data.message)
+    }
+  }
+
+  const listOneImage = async (id) => {
+    try {
+      const response = (await ImageService.listOne(token, id)).data.data
+      setImage(response)
     } catch (err) {
       setMessage(err.response.data.message)
     }
@@ -66,6 +92,9 @@ const AdminGallery = ({ token }) => {
     event.preventDefault()
     listOneAlbum(event.target.id)
     /* TO DO : List images of selected album  */
+
+
+    listOneImage(event.target.id)
   }
 
   const handleOpen = () => {
@@ -85,6 +114,7 @@ const AdminGallery = ({ token }) => {
 
   useEffect(() => {
     listAlbums()
+    listImages()
   }, [])
 
   if (!token) {
@@ -135,6 +165,18 @@ const AdminGallery = ({ token }) => {
               onClick={(event) => handleSelection(event)}
             >
               <FaFolderOpen size={80} />
+              <p>{album.name}</p>
+            </Col>
+          ))}
+          {activeSection === 'images' && images && images.map((image) => (
+            <Col
+              lg={4}
+              key={image.name}
+              id={image.id}
+              className="d-flex flex-column align-items-center mx-auto my-3 album-icon"
+              onClick={(event) => handleSelection(event)}
+            >
+              <Image src={image.src} fluid rounded />
               <p>{album.name}</p>
             </Col>
           ))}
