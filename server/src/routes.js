@@ -72,6 +72,10 @@ module.exports = (app) => {
 
   // GALERY CONTROL ENDPOINTS
 
+  app.get('/images', (req, res) => {
+    res.render('index')
+  })
+
   app.get('/api/images',
     GalleryController.listImages)
 
@@ -84,7 +88,6 @@ module.exports = (app) => {
     GalleryController.updateImage)
 
   app.post('/api/images',
-    Auth.authorize,
     upload.array('images', 12),
     GalleryController.createImages)
 
@@ -103,6 +106,10 @@ module.exports = (app) => {
   app.get('/api/albums/:albumId',
     Auth.authorize,
     GalleryController.getAlbum)
+
+  app.get('/api/album/:albumId',
+    Auth.authorize,
+    GalleryController.listAlbum)
 
   app.post('/api/albums',
     Auth.authorize,
