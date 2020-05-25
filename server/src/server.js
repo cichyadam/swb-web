@@ -29,6 +29,13 @@ require('./routes')(app)
 
 // # Handlers
 
+app.options('/*', (req, res) => {
+  res.header('Access-Control-Allow-Origin', '*')
+  res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS')
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Content-Length, X-Requested-With')
+  res.send(200)
+})
+
 // eslint-disable-next-line no-unused-vars
 app.use((err, req, res, next) => {
   handleError(err, res)

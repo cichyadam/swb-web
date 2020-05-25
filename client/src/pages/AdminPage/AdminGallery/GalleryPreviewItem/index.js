@@ -15,7 +15,8 @@ const GalleryPreviewItem = ({
   name,
   id,
   imgSrc,
-  type
+  type,
+  listItems
 }) => {
   const [albumName, setAlbumName] = useState()
   const [showEditForm, setShowEditForm] = useState(false)
@@ -33,16 +34,24 @@ const GalleryPreviewItem = ({
       name: albumName
     }
     try {
-      await AlbumService.edit(albumId, token, data).data
+      const response = (await AlbumService.edit(albumId, token, data)).data
+
+      if (response) listItems()
     } catch (err) {
       setMessage(err.response.data.message)
     }
   }
 
-  const handleAlbumDelete = async (albumId) => {
-    const albums = [albumId]
+  const handleAlbumDelete = async (albumIds) => {
+    // Subject to change if passing multiple
+    const albums = [albumIds].toString()
     try {
-      await AlbumService.delete(token, albums).data
+      const response = (await AlbumService.delete(token, albums)).data
+
+      if (response) {
+        listItems()
+        setShowModal(false)
+      }
     } catch (err) {
       setMessage(err.response.data.message)
     }
@@ -129,7 +138,8 @@ GalleryPreviewItem.propTypes = {
   name: PropTypes.string,
   id: PropTypes.string,
   imgSrc: PropTypes.node,
-  type: PropTypes.string.isRequired
+  type: PropTypes.string.isRequired,
+  listItems: PropTypes.func.isRequired
 }
 
 GalleryPreviewItem.defaultProps = {

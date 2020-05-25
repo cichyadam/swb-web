@@ -131,7 +131,7 @@ module.exports = {
     try {
       if (!isIdValidObjectId(albumId)) throw new ErrorHandler(403, 'invalid document id passed as a parameter', __filename)
 
-      const result = AlbumService.getOne(albumId)
+      const result = await AlbumService.getOne(albumId)
 
       handleResponse(sculpt(result), res)
     } catch (err) {
@@ -147,18 +147,6 @@ module.exports = {
       const result = await AlbumService.list(criteria)
 
       searchResult(res, criteria, result, ['name'])
-    } catch (err) {
-      next(err)
-    }
-  },
-  async listAlbum(req, res, next) {
-    const { albumId } = req.params
-
-
-    try {
-      const result = await AlbumService.getOne(albumId)
-
-      handleResponse(sculpt(result), res)
     } catch (err) {
       next(err)
     }
@@ -194,7 +182,7 @@ module.exports = {
     const { albumIds, isDeepDelete } = req.query
 
     try {
-      const albumDelete = await AlbumService.deleteMany(albumIds)
+      const albumDelete = await AlbumService.deleteMany(toArray(albumIds))
 
       if (isDeepDelete) {
         const criteria = Criteria({

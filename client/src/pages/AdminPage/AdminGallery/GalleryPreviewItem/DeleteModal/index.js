@@ -24,7 +24,7 @@ const DeleteModal = ({
       <h4>Are you sure?</h4>
       <p>
         Once you will delete this album it will be removed forever. You
-        can not undo this action. I have warned you.
+        can not undo this action. You have been warned.
       </p>
     </Modal.Body>
     <Modal.Footer>

@@ -107,10 +107,6 @@ module.exports = (app) => {
     Auth.authorize,
     GalleryController.getAlbum)
 
-  app.get('/api/album/:albumId',
-    Auth.authorize,
-    GalleryController.listAlbum)
-
   app.post('/api/albums',
     Auth.authorize,
     Validate(schemas.album),
@@ -133,6 +129,6 @@ module.exports = (app) => {
   app.get('/test/:id',
     TestController.testTwo)
 
-  app.get('/get-test',
-    TestController.update)
+  app.delete('/test/delete',
+    TestController.delete)
 }
