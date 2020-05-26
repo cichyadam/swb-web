@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 class ErrorHandler extends Error {
   constructor(statusCode, message, file) {
     super()
@@ -52,7 +51,7 @@ const handleMongooseError = (errors) => {
     return errArray
   }
 
-  console.log(errors)
+  return errors
 }
 
 module.exports = {

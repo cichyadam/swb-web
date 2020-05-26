@@ -1,5 +1,6 @@
 const sharp = require('sharp')
 const { v4: uuidv4 } = require('uuid')
+const Promise = require('bluebird')
 const { dirs, imageHandler: imagesConfig } = require('../config/config')
 const ImageService = require('../services/ImageService')
 const AlbumService = require('../services/AlbumService')
@@ -45,7 +46,8 @@ module.exports = {
         const imageName = `${uuidv4()}.png`
         const fileObject = {
           url: imageName,
-          title: req.body.title[i]
+          title: req.body.title[i],
+          album: req.body.albumId || null
         }
 
         await Promise.map(imagesConfig.sizes, (size) => sharp(file.buffer)
@@ -77,7 +79,8 @@ module.exports = {
 
       const urlsToDelete = imagesToDelete.data.map((image) => image.url)
       const paths = [`${dirs.images}/full/`, `${dirs.images}/medium/`, `${dirs.images}/small/`]
-      const filesToDelete = urlsToDelete.map((url) => paths.map((filePath) => filePath + url)).flat()
+      const filesToDelete = urlsToDelete.map((url) => paths.map((filePath) => filePath + url))
+        .flat()
 
       deleteFiles(filesToDelete, async (err) => {
         if (err) {
@@ -124,7 +127,6 @@ module.exports = {
       next(err)
     }
   },
-
   async getAlbum(req, res, next) {
     const { albumId } = req.params
 

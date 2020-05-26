@@ -6,6 +6,7 @@ const sharp = require('sharp')
 const Promise = require('bluebird')
 const { v4: uuidv4 } = require('uuid')
 const { dirs, imageHandler: imagesConfig } = require('../config/config')
+const { hasPermission } = require('../middleware/policies/Auth')
 const UserService = require('../services/UserService')
 const ImageService = require('../services/ImageService')
 const AlbumService = require('../services/AlbumService')
@@ -19,7 +20,7 @@ const { deleteFiles } = require('../features/FsHandler')
 
 module.exports = {
   async test(req, res, next) {
-    res.json(req.body)
+    res.status(200).send(await hasPermission(req.query.token, 'admin'))
   },
   async testTwo(req, res, next) {
     const { id } = req.params
