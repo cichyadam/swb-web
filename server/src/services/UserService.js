@@ -26,8 +26,19 @@ module.exports = {
     return await User.deleteOne({ _id: userId })
   },
 
-  async list(criteria) {
+  async search(criteria) {
     return await searchQuery(User, criteria, 'role')
+  },
+
+  async list(role) {
+    const users = await User.find()
+      .populate('role')
+
+    if (role === 'superadmin') {
+      return users
+    }
+
+    return users.filter((user) => user.role.name !== 'superadmin')
   },
 
   async updateById(id, newData) {

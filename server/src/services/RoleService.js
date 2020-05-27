@@ -31,8 +31,12 @@ module.exports = {
     return await role.save()
   },
 
-  async list() {
-    return await Role.find()
+  async list(role) {
+    if (role === 'superadmin') {
+      return await Role.find()
+        .populate('permissions')
+    }
+    return await Role.find({ name: { $ne: 'superadmin' } })
       .populate('permissions')
   },
 

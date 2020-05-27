@@ -76,7 +76,7 @@ const AdminGallery = ({ token }) => {
     }
   }
 
-  const createAlbum = async (albumName) => {
+  const createAlbum = async () => {
     const data = {
       name: albumName
     }
@@ -88,13 +88,13 @@ const AdminGallery = ({ token }) => {
     }
   }
 
-  const handleSelection = (event) => {
+  const handleSelection = (event, id) => {
     event.preventDefault()
-    listOneAlbum(event.target.id)
+    listOneAlbum(id)
     /* TO DO : List images of selected album  */
 
 
-    listOneImage(event.target.id)
+    // listOneImage(event.target.id)
   }
 
   const handleOpen = () => {
@@ -162,7 +162,7 @@ const AdminGallery = ({ token }) => {
               key={album.name}
               id={album.id}
               className="d-flex flex-column align-items-center mx-auto my-3 album-icon"
-              onClick={(event) => handleSelection(event)}
+              onClick={(event) => handleSelection(event, album.id)}
             >
               <FaFolderOpen size={80} />
               <p>{album.name}</p>
@@ -191,6 +191,7 @@ const AdminGallery = ({ token }) => {
               token={token}
               id={album._id}
               name={album.name}
+              listItems={listAlbums}
               type="album"
             />
           )

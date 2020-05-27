@@ -9,7 +9,8 @@ module.exports = {
     filter: criterion(query, reduce),
     page: query.page || 1,
     limit: query.limit || 12,
-    sort: query.sort || 'asc'
+    sortField: query.sortField || 'createdAt',
+    order: query.sort ? query.sort === 'asc' ? '1' : '-1' : '-1'
   }),
   searchQuery: async (Model, criteria, populate = '') => {
     const queryObj = {}
@@ -22,8 +23,11 @@ module.exports = {
       })
     }
 
+    const { sortField, order } = criteria
+
     const response = await Promise.all([
       Model.find(queryObj).limit(criteria.limit * 1).skip((criteria.page - 1) * criteria.limit).populate(populate)
+        .sort({ [sortField]: order })
         .exec(),
       Model.find(queryObj).countDocuments().exec()
     ]).spread((data, count) => ({ data, count }), (err) => err)

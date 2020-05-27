@@ -14,10 +14,10 @@ module.exports = {
     return await Album.create(album)
   },
   async deleteOne(albumId) {
-    return await Album.deleteOne({ id: albumId })
+    return await Album.deleteOne({ _id: albumId })
   },
   async deleteMany(albumIds) {
-    return await Album.deleteMany({ id: { $in: albumIds } })
+    return await Album.deleteMany({ _id: { $in: albumIds } })
   },
   async updateById(id, newData) {
     const album = await Album.findById(id)

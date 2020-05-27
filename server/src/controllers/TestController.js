@@ -6,8 +6,10 @@ const sharp = require('sharp')
 const Promise = require('bluebird')
 const { v4: uuidv4 } = require('uuid')
 const { dirs, imageHandler: imagesConfig } = require('../config/config')
+const { hasPermission } = require('../middleware/policies/Auth')
 const UserService = require('../services/UserService')
 const ImageService = require('../services/ImageService')
+const AlbumService = require('../services/AlbumService')
 const { TImage } = require('../helpers/transforms/transforms')
 const { ImageCriterion, UserCriterion, Criteria } = require('../helpers/criterions/criterions')
 const { handleResponse, searchResult } = require('../helpers/resources/response')
@@ -18,7 +20,7 @@ const { deleteFiles } = require('../features/FsHandler')
 
 module.exports = {
   async test(req, res, next) {
-    res.json(req.body)
+    res.status(200).send(await hasPermission(req.query.token, 'admin'))
   },
   async testTwo(req, res, next) {
     const { id } = req.params
@@ -77,28 +79,12 @@ module.exports = {
     }
   },
   async delete(req, res, next) {
-    const { query } = req
+    const { albumIds } = req.query
 
     try {
-      const criteria = Criteria(query, ImageCriterion)
+      const albumDelete = await AlbumService.deleteOne(albumIds)
 
-      const imagesToDelete = await ImageService.list(criteria)
-
-      if (imagesToDelete.count === 0) throw new ErrorHandler(401, 'No images found', __filename)
-
-      const urlsToDelete = imagesToDelete.data.map((image) => image.url)
-      const paths = [`${dirs.images}/full/`, `${dirs.images}/medium/`, `${dirs.images}/small/`]
-      const filesToDelete = urlsToDelete.map((url) => paths.map((filePath) => filePath + url)).flat()
-
-      deleteFiles(filesToDelete, async (err) => {
-        if (err) {
-          throw ErrorHandler(403, err, __filename)
-        } else {
-          const deleted = await ImageService.delete(imagesToDelete.data.map((image) => image.id))
-
-          handleResponse(deleted, res)
-        }
-      })
+      res.status(200).json(albumDelete)
     } catch (err) {
       next(err)
     }

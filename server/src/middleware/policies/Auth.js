@@ -3,7 +3,7 @@ const config = require('../../config/config')
 const { ErrorHandler } = require('../../helpers/errors/error')
 
 module.exports = {
-  authorize(req, res, next) {
+  authorize: (req, res, next) => {
     const { token } = req.query
 
     jwt.verify(token, config.authentication.jwtSecret, (err) => {

@@ -13,9 +13,7 @@ module.exports = {
 
     const decoded = jwt.decode(token)
 
-    const user = await UserService.getById(decoded.sub)
-
-    const { role } = user
+    const { role } = await UserService.getById(decoded.sub)
 
     if (level === 'super') return ['superadmin'].includes(role.name)
     if (level === 'admin') return ['superadmin', 'admin'].includes(role.name)

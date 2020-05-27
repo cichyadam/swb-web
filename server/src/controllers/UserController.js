@@ -35,11 +35,25 @@ module.exports = {
       }
     } else {
       try {
+        let isPermitted = true
+
+        const { name } = await RoleService.getOneById(tUser.role)
+
+        if (name === 'superadmin') {
+          isPermitted = await Permissions.require(req, roles.super, next)
+        }
+
+        if (!isPermitted) throw new ErrorHandler(403, 'Missing required permission', __filename)
+
         const newUser = await UserService.create(tUser)
 
         handleResponse({ user: sculpt(newUser, ['username', 'firstName', 'lastName', 'role']) }, res)
       } catch (err) {
-        next(handleMongooseError(err.errors))
+        if (err.errors) {
+          next(handleMongooseError(err.errors))
+        } else {
+          next(err)
+        }
       }
     }
   },
@@ -73,7 +87,7 @@ module.exports = {
       }
     }
   },
-  async update(req, res, next) {
+  async updateUser(req, res, next) {
     const { params, body } = req
 
     try {
@@ -90,7 +104,7 @@ module.exports = {
       next(err)
     }
   },
-  async delete(req, res, next) {
+  async deleteUser(req, res, next) {
     const { userId } = req.params
 
     try {
@@ -106,15 +120,26 @@ module.exports = {
       next(err)
     }
   },
-  async list(req, res, next) {
+  async searchUsers(req, res, next) {
     const { query } = req
 
     const criteria = Criteria(query, UserCriterion)
 
     try {
-      const result = await UserService.list(criteria)
+      const result = await UserService.search(criteria)
 
       searchResult(res, criteria, result, ['username', 'role.name'])
+    } catch (err) {
+      next(err)
+    }
+  },
+  async listUsers(req, res, next) {
+    try {
+      const { role } = await Permissions.getUserFromToken(req)
+
+      const users = await UserService.list(role.name)
+
+      handleResponse(sculpt(users, ['username', 'role.name']), res)
     } catch (err) {
       next(err)
     }
@@ -130,12 +155,13 @@ module.exports = {
       next(err)
     }
   },
-  async getRoles(req, res, next) {
+  async listRoles(req, res, next) {
     try {
-      // eslint-disable-next-line no-shadow
-      const roles = await RoleService.list()
+      const { role } = await Permissions.getUserFromToken(req)
 
-      handleResponse({ roles }, res)
+      const rolesList = await RoleService.list(role.name)
+
+      handleResponse({ rolesList }, res)
     } catch (err) {
       next(err)
     }
