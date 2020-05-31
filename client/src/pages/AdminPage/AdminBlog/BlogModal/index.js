@@ -10,6 +10,7 @@ import TagService from '../../../../services/TagService'
 
 const BlogModal = ({
   token,
+  author,
   showModal,
   closeModal,
   blogPost,
@@ -75,8 +76,7 @@ const BlogModal = ({
             <Form.Label>Author</Form.Label>
             <Form.Control
               type="text"
-              placeholder="Author"
-              defaultValue={blogPost && blogPost.author}
+              placeholder={author}
               disabled
             />
           </Form.Group>
@@ -183,6 +183,7 @@ const BlogModal = ({
 
 BlogModal.propTypes = {
   token: PropTypes.string.isRequired,
+  author: PropTypes.string.isRequired,
   showModal: PropTypes.bool.isRequired,
   closeModal: PropTypes.func.isRequired,
   handleSave: PropTypes.func.isRequired,

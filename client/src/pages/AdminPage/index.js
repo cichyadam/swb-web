@@ -7,7 +7,11 @@ import BaseSection from '../../components/BaseSection'
 
 import AdminPanel from './AdminPanel'
 
-const AdminPage = ({ token, saveToken }) => {
+const AdminPage = ({
+  token,
+  saveToken,
+  saveUserData
+}) => {
   const [username, setUsername] = useState()
   const [password, setPassword] = useState()
   const [error, setError] = useState()
@@ -29,11 +33,18 @@ const AdminPage = ({ token, saveToken }) => {
 
     try {
       const response = (await AuthService.login(user)).data.data
+      const data = {
+        id: response.user.id,
+        username: response.user.username,
+        role: response.user.role.name
+      }
       const authToken = response.token
       sessionStorage.setItem('token', authToken)
+      sessionStorage.setItem('user', JSON.stringify(data))
       saveToken(authToken)
+      saveUserData(data)
     } catch (err) {
-      setError(err.response.data.message)
+      setError(err.response)
     }
   }
 
@@ -76,11 +87,22 @@ const AdminPage = ({ token, saveToken }) => {
 
 AdminPage.propTypes = {
   token: PropTypes.string,
-  saveToken: PropTypes.func.isRequired
+  saveToken: PropTypes.func.isRequired,
+  userData: PropTypes.shape({
+    id: PropTypes.number,
+    username: PropTypes.string,
+    role: PropTypes.string
+  }),
+  saveUserData: PropTypes.func.isRequired
 }
 
 AdminPage.defaultProps = {
-  token: undefined
+  token: undefined,
+  userData: PropTypes.shape({
+    id: undefined,
+    username: undefined,
+    role: undefined
+  })
 }
 
 export default AdminPage

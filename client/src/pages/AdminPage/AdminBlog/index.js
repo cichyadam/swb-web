@@ -19,7 +19,7 @@ import TagService from '../../../services/TagService'
 
 const formatDate = (date) => moment(date).format('DD/MM/YY')
 
-const AdminBlog = ({ token }) => {
+const AdminBlog = ({ token, userData }) => {
   const [showModal, setShowModal] = useState(false)
   const [showConfirmModal, setShowConfirmModal] = useState(false)
   // eslint-disable-next-line no-unused-vars
@@ -205,7 +205,7 @@ const AdminBlog = ({ token }) => {
     handleList()
     // This will be removed once the image upload will be done
     setImageUrl('image.png')
-    setAuthor('Adam')
+    setAuthor(userData.username)
   }, [])
 
 
@@ -233,6 +233,7 @@ const AdminBlog = ({ token }) => {
               blogPost={blogPost}
               error={error}
               tags={tags}
+              author={author}
               token={token}
               showModal={showModal}
               closeModal={handleClose}
@@ -305,11 +306,21 @@ const AdminBlog = ({ token }) => {
 }
 
 AdminBlog.propTypes = {
-  token: PropTypes.string
+  token: PropTypes.string,
+  userData: PropTypes.shape({
+    id: PropTypes.number,
+    username: PropTypes.string,
+    role: PropTypes.string
+  })
 }
 
 AdminBlog.defaultProps = {
-  token: undefined
+  token: undefined,
+  userData: PropTypes.shape({
+    id: undefined,
+    username: undefined,
+    role: undefined
+  })
 }
 
 BlogModal.propTypes = {

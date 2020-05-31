@@ -3,14 +3,17 @@ import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import { Redirect } from 'react-router-dom'
 
-import { Col, Form, Button } from 'react-bootstrap'
+import {
+  Col, Button, Table
+} from 'react-bootstrap'
 
 import AuthService from '../../../services/AuthService'
 import RolesService from '../../../services/RolesService'
 
 import BaseSection from '../../../components/BaseSection'
+import UserModal from './UserModal'
 
-const AdminUsers = ({ token }) => {
+const AdminUsers = ({ token, userData }) => {
   const [firstName, setFirstName] = useState()
   const [lastName, setLastName] = useState()
   const [username, setUsername] = useState()
@@ -19,6 +22,11 @@ const AdminUsers = ({ token }) => {
   const [roles, setRoles] = useState([])
   const [error, setError] = useState()
   const [success, setSuccess] = useState()
+
+  const [users, setUsers] = useState()
+
+  const [showModal, setShowModal] = useState(false)
+
 
   const handleChange = (event) => {
     if (event.target.name === 'firstName') {
@@ -42,11 +50,28 @@ const AdminUsers = ({ token }) => {
 
   const listRoles = async () => {
     try {
-      const response = (await RolesService.list()).data.data.roles
+      const response = (await RolesService.list(token)).data.data.rolesList
       setRoles(response)
     } catch (err) {
-      setError(err.response.data.message)
+      setError(err.response)
     }
+  }
+
+  const listUsers = async () => {
+    try {
+      const response = (await AuthService.list(token)).data.data
+      setUsers(response)
+    } catch (err) {
+      setError(err.response)
+    }
+  }
+
+  const handleOpenModal = () => {
+    setShowModal(true)
+  }
+
+  const handleCloseModal = () => {
+    setShowModal(false)
   }
 
   const handleSubmit = async (event) => {
@@ -63,12 +88,13 @@ const AdminUsers = ({ token }) => {
       const userCreated = response.user.username
       setSuccess(`User ${userCreated} was successfuly created`)
     } catch (err) {
-      setError(err.response.data.message)
+      setError(err.response)
     }
   }
 
   useEffect(() => {
     listRoles()
+    listUsers()
   }, [])
 
   if (!token) {
@@ -77,80 +103,84 @@ const AdminUsers = ({ token }) => {
     )
   }
 
+  if (userData.role === 'cooperator') {
+    return (
+      <Redirect to="/admin" />
+    )
+  }
+
   return (
     <BaseSection fullScreen>
       <Col lg={12}>
-        <div className="mx-auto d-flex flex-column align-items-center">
-          <h2>Create user accounts</h2>
-        </div>
-      </Col>
-      <Col lg={4} className="mx-auto">
-        <Form onSubmit={handleSubmit}>
-          <Form.Group controlId="formBasicFirstName">
-            <Form.Label>First Name</Form.Label>
-            <Form.Control
-              name="firstName"
-              type="firstName"
-              placeholder="Enter first name"
-              onChange={handleChange}
-            />
-          </Form.Group>
-          <Form.Group controlId="formBasicLastName">
-            <Form.Label>Last Name</Form.Label>
-            <Form.Control
-              name="lastName"
-              type="lastName"
-              placeholder="Enter last name"
-              onChange={handleChange}
-            />
-          </Form.Group>
-          <Form.Group controlId="formBasicUsername">
-            <Form.Label>Username</Form.Label>
-            <Form.Control
-              name="username"
-              type="username"
-              placeholder="Enter username"
-              onChange={handleChange}
-            />
-          </Form.Group>
-          <Form.Group>
-            <Form.Label>Roles</Form.Label>
-            <Form.Control as="select" name="roles" onChange={handleChange}>
-              <option selected disabled>Choose a role</option>
-              {/* eslint-disable-next-line no-shadow */}
-              {roles && roles.map((role) => (
-                <option key={role._id} id={role._id}>
-                  {role.name}
-                </option>
+        <Button className="my-4" onClick={handleOpenModal}>
+          Create user
+        </Button>
+        <UserModal
+          error={error}
+          success={success}
+          roles={roles}
+          showModal={showModal}
+          closeModal={handleCloseModal}
+          handleChange={handleChange}
+          handleSubmit={handleSubmit}
+        />
+        <Table striped bordered hover variant="dark">
+          <thead>
+            <tr>
+              <th>Username</th>
+              <th>Role</th>
+              <th className="text-center">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {userData.role === 'admin' && users && users
+              .filter((user) => (user.role.name !== 'superadmin'))
+              .map((filteredUser) => (
+                <tr key={filteredUser.username}>
+                  <td>{filteredUser.username}</td>
+                  <td>{filteredUser.role.name}</td>
+                  <td className="d-flex justify-content-center">
+                    <>
+                      <Button
+                        variant="danger"
+                      >
+                        Delete
+                      </Button>
+                    </>
+                  </td>
+                </tr>
+
               ))}
-            </Form.Control>
-          </Form.Group>
-          <Form.Group controlId="formBasicPassword">
-            <Form.Label>Password</Form.Label>
-            <Form.Control
-              name="password"
-              type="password"
-              placeholder="Password"
-              onChange={handleChange}
-            />
-          </Form.Group>
-          <Button variant="success" type="submit">
-            Create
-          </Button>
-          <p className="mt-4 text-danger">
-            {error && error}
-          </p>
-          <p className="mt-4 text-success">
-            {success && success}
-          </p>
-        </Form>
+            {userData.role === 'superadmin' && users && users.map((user) => (
+              <tr key={user.username}>
+                <td>{user.username}</td>
+                <td>{user.role.name}</td>
+                <td className="d-flex justify-content-center">
+                  <>
+                    <Button
+                      variant="danger"
+                    >
+                      Delete
+                    </Button>
+                  </>
+                </td>
+              </tr>
+
+            ))}
+          </tbody>
+        </Table>
       </Col>
     </BaseSection>
   )
 }
 
 AdminUsers.propTypes = {
-  token: PropTypes.string
+  token: PropTypes.string,
+  userData: PropTypes.shape({
+    id: PropTypes.number,
+    username: PropTypes.string,
+    role: PropTypes.string
+  }).isRequired
 }
 
 AdminUsers.defaultProps = {

@@ -11,41 +11,51 @@ import AdminPage from './pages/AdminPage'
 import AdminBlog from './pages/AdminPage/AdminBlog'
 import AdminGallery from './pages/AdminPage/AdminGallery'
 import AdminUsers from './pages/AdminPage/AdminUsers'
+import AdminProfile from './pages/AdminPage/AdminProfile'
 
 import LogoutPage from './pages/LogoutPage'
 
 const App = () => {
   const [token, setToken] = useState()
+  const [userData, setUserData] = useState()
 
   useEffect(() => {
     const authToken = sessionStorage.getItem('token')
-    if (authToken) {
-      setToken(authToken)
-    }
+    const data = sessionStorage.getItem('user')
+    if (authToken) setToken(authToken)
+    if (data) setUserData(JSON.parse(data))
   }, [])
 
   return (
     <Router>
       <div className="App">
-        <Header token={token} />
+        <Header token={token} userData={userData} />
         <Switch>
           <Route exact path="/">
             <HomePage />
           </Route>
           <Route path="/admin">
-            <AdminPage token={token} saveToken={setToken} />
+            <AdminPage
+              token={token}
+              saveToken={setToken}
+              userData={userData}
+              saveUserData={setUserData}
+            />
           </Route>
           <Route path="/admin-blog">
-            <AdminBlog token={token} />
+            <AdminBlog token={token} userData={userData} />
+          </Route>
+          <Route path="/admin-profile">
+            <AdminProfile token={token} userData={userData} />
           </Route>
           <Route path="/admin-gallery">
-            <AdminGallery token={token} />
+            <AdminGallery token={token} userData={userData} />
           </Route>
           <Route path="/admin-users">
-            <AdminUsers token={token} />
+            <AdminUsers token={token} userData={userData} />
           </Route>
           <Route path="/logout">
-            <LogoutPage removeToken={setToken} />
+            <LogoutPage removeToken={setToken} removeUserData={setUserData} />
           </Route>
         </Switch>
       </div>

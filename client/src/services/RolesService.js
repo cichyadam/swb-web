@@ -1,7 +1,7 @@
 import api from './api'
 
 export default {
-  list() {
-    return api.get('/roles/')
+  list(token) {
+    return api.get(`/roles?token=${token}`)
   }
 }

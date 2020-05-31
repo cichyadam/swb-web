@@ -32,7 +32,7 @@ const AdminGallery = ({ token }) => {
   const [album, setAlbum] = useState([])
 
   const [images, setImages] = useState([])
-  const [image, setImage] = useState([])
+  /* const [image, setImage] = useState([]) */
 
   const [showAlbumModal, setShowAlbumModal] = useState(false)
   const [albumName, setAlbumName] = useState()
@@ -67,14 +67,14 @@ const AdminGallery = ({ token }) => {
     }
   }
 
-  const listOneImage = async (id) => {
+  /*  const listOneImage = async (id) => {
     try {
       const response = (await ImageService.listOne(token, id)).data.data
       setImage(response)
     } catch (err) {
       setMessage(err.response.data.message)
     }
-  }
+  } */
 
   const createAlbum = async () => {
     const data = {
@@ -197,7 +197,7 @@ const AdminGallery = ({ token }) => {
           )
         }
         {/* TO DO : Finish detailed preview of one image */}
-        {
+        {/* {
           activeSection === 'images'
           && image
           && (
@@ -209,7 +209,7 @@ const AdminGallery = ({ token }) => {
               imgSrc={image.src}
             />
           )
-        }
+        } */}
       </Col>
     </BaseSection>
   )
