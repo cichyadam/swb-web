@@ -5,6 +5,7 @@ import './assets/styles/index.scss'
 
 import Header from './components/Header'
 
+import BlogPage from './pages/BlogPage'
 import HomePage from './pages/HomePage'
 
 import AdminPage from './pages/AdminPage'
@@ -33,6 +34,9 @@ const App = () => {
         <Switch>
           <Route exact path="/">
             <HomePage />
+          </Route>
+          <Route exact path="/blog">
+            <BlogPage />
           </Route>
           <Route path="/admin">
             <AdminPage
