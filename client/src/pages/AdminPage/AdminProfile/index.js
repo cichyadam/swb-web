@@ -12,6 +12,7 @@ const AdminProfile = ({ userData, token }) => {
   const [username, setUsername] = useState()
   const [password, setPassword] = useState()
   const [error, setError] = useState()
+  const [success, setSuccess] = useState()
 
   const handleChange = (event) => {
     if (event.target.name === 'username') {
@@ -30,8 +31,8 @@ const AdminProfile = ({ userData, token }) => {
     }
     try {
       const response = await AuthService.update(token, userData.id, data)
-      console.log(response)
-    } catch(err) {
+      setSuccess(`${response.message} has been successfully updated.`)
+    } catch (err) {
       setError(err.response)
     }
   }
@@ -43,8 +44,10 @@ const AdminProfile = ({ userData, token }) => {
           Hello
           {' '}
           {userData.username}
+          (
+          {userData.role.name}
+          )
         </h3>
-        p
       </Col>
       <Col lg={4} className="mx-auto">
         <h5>Change username or password</h5>

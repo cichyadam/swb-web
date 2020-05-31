@@ -38,13 +38,14 @@ const AdminBlog = ({ token, userData }) => {
 
   const [message, setMessage] = useState()
   const [error, setError] = useState()
+  const [success, setSuccess] = useState()
 
   const handleList = async () => {
     try {
       const response = (await BlogService.list()).data
       setBlogPosts(response)
     } catch (err) {
-      setMessage(err.response.data.message)
+      setError(err.response.data.message)
     }
   }
 
@@ -72,7 +73,7 @@ const AdminBlog = ({ token, userData }) => {
         setActiveTags(postTags)
       }
     } catch (err) {
-      setMessage(err.response.data.message)
+      setError(err.response.data.message)
     }
   }
 
@@ -81,7 +82,7 @@ const AdminBlog = ({ token, userData }) => {
       const response = (await TagService.list()).data
       setTags(response)
     } catch (err) {
-      setMessage(err.response.data.message)
+      setError(err.response.data.message)
     }
   }
 
@@ -147,11 +148,11 @@ const AdminBlog = ({ token, userData }) => {
       imageUrl
     }
     try {
-      const response = (await BlogService.edit(id, token, data)).data
-      setMessage(response.message)
+      await BlogService.edit(id, token, data).data
+      setSuccess('Blog post has been successfuly edited.')
       handleList()
     } catch (err) {
-      setMessage(err.response.data.message)
+      setError(err.response.data.message)
     }
   }
 
@@ -167,8 +168,8 @@ const AdminBlog = ({ token, userData }) => {
       imageUrl
     }
     try {
-      const response = (await BlogService.create(token, data)).data
-      setMessage(response.message)
+      await BlogService.create(token, data).data
+      setSuccess('Blog post has been successfuly created.')
       handleClose()
       handleList()
     } catch (err) {
@@ -188,10 +189,10 @@ const AdminBlog = ({ token, userData }) => {
     handleList()
     handleConfirmClose()
     try {
-      const response = (await BlogService.delete(id, token)).data
-      setMessage(response.message)
+      await BlogService.delete(id, token).data
+      setSuccess('Blog post has been successfuly deleted.')
     } catch (err) {
-      setMessage(err.response.data.message)
+      setError(err.response.data.message)
     }
   }
 
