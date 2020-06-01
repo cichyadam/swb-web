@@ -3,6 +3,7 @@ import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 
 import { Modal, Button, Form } from 'react-bootstrap'
+import { useToasts } from 'react-toast-notifications'
 
 import TagModal from './TagModal'
 
@@ -19,13 +20,13 @@ const BlogModal = ({
   handleCreate,
   handleRemoveTag,
   handleTags,
-  error,
   tags,
   activeTags
 }) => {
   const [showTagModal, setShowTagModal] = useState(false)
   const [tagName, setTagName] = useState()
-  const [tagError, setTagError] = useState()
+
+  const { addToast } = useToasts()
 
   const handleConfirmOpen = () => {
     setShowTagModal(true)
@@ -51,7 +52,10 @@ const BlogModal = ({
       handleConfirmClose()
       handleTags()
     } catch (err) {
-      setTagError(err.response.data.message)
+      addToast(err.response.data.message, {
+        appearance: 'error',
+        autoDismiss: false
+      })
     }
   }
 
@@ -123,7 +127,6 @@ const BlogModal = ({
             </Button>
             <TagModal
               showTagModal={showTagModal}
-              tagError={tagError}
               closeTagModal={handleConfirmClose}
               handleTagChange={handleTagChange}
               handleTagCreate={handleTagCreate}
@@ -156,7 +159,6 @@ const BlogModal = ({
             />
           </Form.Group>
         </Form>
-        {error && (<p className="text-danger">{error}</p>)}
       </Modal.Body>
       <Modal.Footer>
         {blogPost && (
@@ -191,7 +193,6 @@ BlogModal.propTypes = {
   handleCreate: PropTypes.func.isRequired,
   handleChange: PropTypes.func.isRequired,
   handleRemoveTag: PropTypes.func.isRequired,
-  error: PropTypes.string.isRequired,
   blogPost: PropTypes.shape({
     _id: PropTypes.number,
     author: PropTypes.string,

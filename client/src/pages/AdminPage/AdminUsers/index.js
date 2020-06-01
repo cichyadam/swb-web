@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import { Redirect } from 'react-router-dom'
+import { useToasts } from 'react-toast-notifications'
 
 import {
   Col, Button, Table
@@ -12,6 +13,7 @@ import RolesService from '../../../services/RolesService'
 
 import BaseSection from '../../../components/BaseSection'
 import UserModal from './UserModal'
+import ConfirmModal from './ConfirmModal'
 
 const AdminUsers = ({ token, userData }) => {
   const [firstName, setFirstName] = useState()
@@ -20,13 +22,14 @@ const AdminUsers = ({ token, userData }) => {
   const [password, setPassword] = useState()
   const [role, setRole] = useState()
   const [roles, setRoles] = useState([])
-  const [error, setError] = useState()
-  const [success, setSuccess] = useState()
 
   const [users, setUsers] = useState()
 
   const [showModal, setShowModal] = useState(false)
+  const [showConfirmModal, setShowConfirmModal] = useState(false)
 
+
+  const { addToast } = useToasts()
 
   const handleChange = (event) => {
     if (event.target.name === 'firstName') {
@@ -53,7 +56,10 @@ const AdminUsers = ({ token, userData }) => {
       const response = (await RolesService.list(token)).data.data.rolesList
       setRoles(response)
     } catch (err) {
-      setError(err.response)
+      addToast(err.response.data.message, {
+        appearance: 'error',
+        autoDismiss: false
+      })
     }
   }
 
@@ -62,7 +68,10 @@ const AdminUsers = ({ token, userData }) => {
       const response = (await AuthService.list(token)).data.data
       setUsers(response)
     } catch (err) {
-      setError(err.response)
+      addToast(err.response.data.message, {
+        appearance: 'error',
+        autoDismiss: false
+      })
     }
   }
 
@@ -84,11 +93,46 @@ const AdminUsers = ({ token, userData }) => {
       role
     }
     try {
-      const response = (await AuthService.register(user)).data.data
+      const response = (await AuthService.register(user, token)).data.data
       const userCreated = response.user.username
-      setSuccess(`User ${userCreated} was successfuly created`)
+      addToast(`User ${userCreated} was successfuly created`, {
+        appearance: 'success',
+        autoDismiss: false
+      })
+      handleCloseModal()
+      listUsers()
     } catch (err) {
-      setError(err.response)
+      addToast(err.response.data.message, {
+        appearance: 'error',
+        autoDismiss: false
+      })
+    }
+  }
+
+  const handleConfirmOpen = () => {
+    setShowConfirmModal(true)
+  }
+
+  const handleConfirmClose = () => {
+    setShowConfirmModal(false)
+  }
+
+  const handleDelete = async (id) => {
+    listUsers()
+    handleConfirmClose()
+    try {
+      await AuthService.delete(id, token)
+      addToast('User has been successfuly deleted.', {
+        appearance: 'success',
+        autoDismiss: false
+      })
+      handleConfirmClose()
+      listUsers()
+    } catch (err) {
+      addToast(err.response.data.message, {
+        appearance: 'error',
+        autoDismiss: false
+      })
     }
   }
 
@@ -108,7 +152,6 @@ const AdminUsers = ({ token, userData }) => {
       <Redirect to="/admin" />
     )
   }
-
   return (
     <BaseSection fullScreen>
       <Col lg={12}>
@@ -116,8 +159,6 @@ const AdminUsers = ({ token, userData }) => {
           Create user
         </Button>
         <UserModal
-          error={error}
-          success={success}
           roles={roles}
           showModal={showModal}
           closeModal={handleCloseModal}
@@ -159,9 +200,16 @@ const AdminUsers = ({ token, userData }) => {
                   <>
                     <Button
                       variant="danger"
+                      onClick={handleConfirmOpen}
                     >
                       Delete
                     </Button>
+                    <ConfirmModal
+                      showConfirmModal={showConfirmModal}
+                      closeConfirmModal={handleConfirmClose}
+                      handleDelete={handleDelete}
+                      userId={user.id}
+                    />
                   </>
                 </td>
               </tr>

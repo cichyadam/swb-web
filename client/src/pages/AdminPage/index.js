@@ -1,6 +1,8 @@
 import React, { useState } from 'react'
-import { Button, Form } from 'react-bootstrap'
 import PropTypes from 'prop-types'
+
+import { Button, Form } from 'react-bootstrap'
+import { useToasts } from 'react-toast-notifications'
 
 import AuthService from '../../services/AuthService'
 import BaseSection from '../../components/BaseSection'
@@ -14,7 +16,8 @@ const AdminPage = ({
 }) => {
   const [username, setUsername] = useState()
   const [password, setPassword] = useState()
-  const [error, setError] = useState()
+
+  const { addToast } = useToasts()
 
   const handleChange = (event) => {
     if (event.target.name === 'username') {
@@ -44,7 +47,10 @@ const AdminPage = ({
       saveToken(authToken)
       saveUserData(data)
     } catch (err) {
-      setError(err.response)
+      addToast(err.response.data.message, {
+        appearance: 'error',
+        autoDismiss: false
+      })
     }
   }
 
@@ -77,9 +83,6 @@ const AdminPage = ({
         <Button variant="dark" type="submit">
           Login
         </Button>
-        <p className="mt-4 text-danger">
-          {error && error}
-        </p>
       </Form>
     </BaseSection>
   )

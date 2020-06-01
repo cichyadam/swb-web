@@ -1,6 +1,8 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 
+import { useToasts } from 'react-toast-notifications'
+
 import { Col, Form, Button } from 'react-bootstrap'
 
 import BaseSection from '../../../components/BaseSection'
@@ -11,8 +13,8 @@ import AuthService from '../../../services/AuthService'
 const AdminProfile = ({ userData, token }) => {
   const [username, setUsername] = useState()
   const [password, setPassword] = useState()
-  const [error, setError] = useState()
-  const [success, setSuccess] = useState()
+
+  const { addToast } = useToasts()
 
   const handleChange = (event) => {
     if (event.target.name === 'username') {
@@ -31,9 +33,15 @@ const AdminProfile = ({ userData, token }) => {
     }
     try {
       const response = await AuthService.update(token, userData.id, data)
-      setSuccess(`${response.message} has been successfully updated.`)
+      addToast(`${JSON.parse(response.config.data)} has been successfully updated.`, {
+        appearance: 'success',
+        autoDismiss: false
+      })
     } catch (err) {
-      setError(err.response)
+      addToast(err.response.data.message, {
+        appearance: 'error',
+        autoDismiss: false
+      })
     }
   }
 

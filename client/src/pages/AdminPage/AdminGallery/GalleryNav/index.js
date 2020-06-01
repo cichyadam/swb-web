@@ -4,7 +4,6 @@ import PropTypes from 'prop-types'
 import { FaImages, FaFolderOpen } from 'react-icons/fa'
 
 const GalleryNav = ({ setActiveSection }) => {
-
   const handleClick = (data) => {
     setActiveSection(data)
   }

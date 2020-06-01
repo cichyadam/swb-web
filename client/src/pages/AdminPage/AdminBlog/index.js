@@ -6,8 +6,10 @@ import PropTypes from 'prop-types'
 import moment from 'moment'
 import { Redirect } from 'react-router-dom'
 
+import { useToasts } from 'react-toast-notifications'
+
 import {
-  Row, Col, Button, Table, Alert
+  Row, Col, Button, Table
 } from 'react-bootstrap'
 
 import BaseSection from '../../../components/BaseSection'
@@ -36,16 +38,17 @@ const AdminBlog = ({ token, userData }) => {
   const [imageUrl, setImageUrl] = useState()
   const [activeTags, setActiveTags] = useState([])
 
-  const [message, setMessage] = useState()
-  const [error, setError] = useState()
-  const [success, setSuccess] = useState()
+  const { addToast } = useToasts()
 
   const handleList = async () => {
     try {
       const response = (await BlogService.list()).data
       setBlogPosts(response)
     } catch (err) {
-      setError(err.response.data.message)
+      addToast(err.response.data.message, {
+        appearance: 'error',
+        autoDismiss: false
+      })
     }
   }
 
@@ -73,7 +76,10 @@ const AdminBlog = ({ token, userData }) => {
         setActiveTags(postTags)
       }
     } catch (err) {
-      setError(err.response.data.message)
+      addToast(err.response.data.message, {
+        appearance: 'error',
+        autoDismiss: false
+      })
     }
   }
 
@@ -82,7 +88,10 @@ const AdminBlog = ({ token, userData }) => {
       const response = (await TagService.list()).data
       setTags(response)
     } catch (err) {
-      setError(err.response.data.message)
+      addToast(err.response.data.message, {
+        appearance: 'error',
+        autoDismiss: false
+      })
     }
   }
 
@@ -149,10 +158,16 @@ const AdminBlog = ({ token, userData }) => {
     }
     try {
       await BlogService.edit(id, token, data).data
-      setSuccess('Blog post has been successfuly edited.')
+      addToast('Blog post has been successfuly edited.', {
+        appearance: 'success',
+        autoDismiss: false
+      })
       handleList()
     } catch (err) {
-      setError(err.response.data.message)
+      addToast(err.response.data.message, {
+        appearance: 'error',
+        autoDismiss: false
+      })
     }
   }
 
@@ -169,11 +184,17 @@ const AdminBlog = ({ token, userData }) => {
     }
     try {
       await BlogService.create(token, data).data
-      setSuccess('Blog post has been successfuly created.')
+      addToast('Blog post has been successfuly created.', {
+        appearance: 'success',
+        autoDismiss: false
+      })
       handleClose()
       handleList()
     } catch (err) {
-      setError(err.response.data.message)
+      addToast(err.response.data.message, {
+        appearance: 'error',
+        autoDismiss: false
+      })
     }
   }
 
@@ -186,19 +207,20 @@ const AdminBlog = ({ token, userData }) => {
   }
 
   const handleDelete = async (id) => {
-    handleList()
-    handleConfirmClose()
     try {
       await BlogService.delete(id, token).data
-      setSuccess('Blog post has been successfuly deleted.')
+      addToast('Blog post has been successfuly deleted.', {
+        appearance: 'success',
+        autoDismiss: false
+      })
+      handleList()
+      handleConfirmClose()
     } catch (err) {
-      setError(err.response.data.message)
+      addToast(err.response.data.message, {
+        appearance: 'error',
+        autoDismiss: false
+      })
     }
-  }
-
-  const handleAlertClose = () => {
-    setMessage()
-    setShowAlert(false)
   }
 
   useEffect(() => {
@@ -208,7 +230,6 @@ const AdminBlog = ({ token, userData }) => {
     setImageUrl('image.png')
     setAuthor(userData.username)
   }, [])
-
 
   if (!token) {
     return (
@@ -232,7 +253,6 @@ const AdminBlog = ({ token, userData }) => {
             <BlogModal
               activeTags={activeTags}
               blogPost={blogPost}
-              error={error}
               tags={tags}
               author={author}
               token={token}
@@ -247,13 +267,6 @@ const AdminBlog = ({ token, userData }) => {
           </Col>
         </Row>
         <Row className="py-4">
-          <Col lg={12}>
-            {message && (
-              <Alert variant="success" onClose={handleAlertClose} dismissible>
-                <p>{message}</p>
-              </Alert>
-            )}
-          </Col>
           <Col lg={12}>
             <Table striped bordered hover variant="dark">
               <thead>

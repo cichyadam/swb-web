@@ -7,8 +7,7 @@ const TagModal = ({
   showTagModal,
   closeTagModal,
   handleTagChange,
-  handleTagCreate,
-  tagError
+  handleTagCreate
 }) => (
   <Modal
     show={showTagModal}
@@ -33,7 +32,6 @@ const TagModal = ({
           />
         </Form.Group>
       </Form>
-      {tagError && (<p className="text-danger">{tagError}</p>)}
     </Modal.Body>
     <Modal.Footer>
       <Button
@@ -48,7 +46,6 @@ const TagModal = ({
 )
 
 TagModal.propTypes = {
-  tagError: PropTypes.string.isRequired,
   showTagModal: PropTypes.bool.isRequired,
   closeTagModal: PropTypes.func.isRequired,
   handleTagChange: PropTypes.func.isRequired,

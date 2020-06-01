@@ -5,6 +5,6 @@ export default {
     return api.get('/tags')
   },
   create(token, data) {
-    return api.post(`/tags/create?token=${token}`, data)
+    return api.post(`/tags?token=${token}`, data)
   }
 }

@@ -9,9 +9,7 @@ const UserModal = ({
   showModal,
   closeModal,
   handleChange,
-  handleSubmit,
-  error,
-  success
+  handleSubmit
 }) => (
   <Modal
     show={showModal}
@@ -74,18 +72,12 @@ const UserModal = ({
             onChange={handleChange}
           />
         </Form.Group>
-        <Button variant="success" type="submit">
-          Create
-        </Button>
-        <p className="mt-4 text-danger">
-          {error && error}
-        </p>
-        <p className="mt-4 text-success">
-          {success && success}
-        </p>
       </Form>
     </Modal.Body>
     <Modal.Footer>
+      <Button variant="success" type="submit" onClick={handleSubmit}>
+        Create
+      </Button>
       <Button variant="danger" onClick={closeModal}>Close</Button>
     </Modal.Footer>
   </Modal>
@@ -96,8 +88,6 @@ UserModal.propTypes = {
   closeModal: PropTypes.func.isRequired,
   handleSubmit: PropTypes.func.isRequired,
   handleChange: PropTypes.func.isRequired,
-  error: PropTypes.string.isRequired,
-  success: PropTypes.string.isRequired,
   roles: PropTypes.arrayOf(
     PropTypes.shape({
       _id: PropTypes.number,

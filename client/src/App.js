@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
+import { ToastProvider } from 'react-toast-notifications'
 
 import './assets/styles/index.scss'
 
@@ -39,24 +40,34 @@ const App = () => {
             <BlogPage />
           </Route>
           <Route path="/admin">
-            <AdminPage
-              token={token}
-              saveToken={setToken}
-              userData={userData}
-              saveUserData={setUserData}
-            />
+            <ToastProvider>
+              <AdminPage
+                token={token}
+                saveToken={setToken}
+                userData={userData}
+                saveUserData={setUserData}
+              />
+            </ToastProvider>
           </Route>
           <Route path="/admin-blog">
-            <AdminBlog token={token} userData={userData} />
+            <ToastProvider>
+              <AdminBlog token={token} userData={userData} />
+            </ToastProvider>
           </Route>
           <Route path="/admin-profile">
-            <AdminProfile token={token} userData={userData} />
+            <ToastProvider>
+              <AdminProfile token={token} userData={userData} />
+            </ToastProvider>
           </Route>
           <Route path="/admin-gallery">
-            <AdminGallery token={token} userData={userData} />
+            <ToastProvider>
+              <AdminGallery token={token} userData={userData} />
+            </ToastProvider>
           </Route>
           <Route path="/admin-users">
-            <AdminUsers token={token} userData={userData} />
+            <ToastProvider>
+              <AdminUsers token={token} userData={userData} />
+            </ToastProvider>
           </Route>
           <Route path="/logout">
             <LogoutPage removeToken={setToken} removeUserData={setUserData} />

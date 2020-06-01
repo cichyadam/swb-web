@@ -8,13 +8,13 @@ export default {
     return api.get(`/blog/${id}`)
   },
   create(token, data) {
-    return api.post(`/blog/create?token=${token}`, data)
+    return api.post(`/blog?token=${token}`, data)
   },
   edit(id, token, data) {
-    return api.post(`/blog/${id}/edit?token=${token}`, data)
+    return api.put(`/blog/${id}?token=${token}`, data)
   },
   delete(id, token) {
-    return api.post(`/blog/${id}/delete?token=${token}`)
+    return api.delete(`/blog/${id}?token=${token}`)
   }
 
 }

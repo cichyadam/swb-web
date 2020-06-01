@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 
 import { Form, Image, Button } from 'react-bootstrap'
 import { FaFolderOpen } from 'react-icons/fa'
+import { useToasts } from 'react-toast-notifications'
 
 import GirlImage from '../../../../assets/images/girl.jpeg'
 
@@ -21,7 +22,8 @@ const GalleryPreviewItem = ({
   const [albumName, setAlbumName] = useState()
   const [showEditForm, setShowEditForm] = useState(false)
   const [showModal, setShowModal] = useState(false)
-  const [message, setMessage] = useState()
+
+  const { addToast } = useToasts()
 
   const handleChange = (event) => {
     if (event.target.name === 'name' && type === 'album') {
@@ -34,11 +36,17 @@ const GalleryPreviewItem = ({
       name: albumName
     }
     try {
-      const response = (await AlbumService.edit(albumId, token, data)).data
-
-      if (response) listItems()
+      await AlbumService.edit(albumId, token, data)
+      listItems()
+      addToast('Album was successfully edited', {
+        appearance: 'success',
+        autoDismiss: false
+      })
     } catch (err) {
-      setMessage(err.response.data.message)
+      addToast(err.response.data.message, {
+        appearance: 'error',
+        autoDismiss: false
+      })
     }
   }
 
@@ -52,8 +60,15 @@ const GalleryPreviewItem = ({
         listItems()
         setShowModal(false)
       }
+      addToast('Album was successfully deleted', {
+        appearance: 'success',
+        autoDismiss: false
+      })
     } catch (err) {
-      setMessage(err.response.data.message)
+      addToast(err.response.data.message, {
+        appearance: 'error',
+        autoDismiss: false
+      })
     }
   }
 
@@ -128,7 +143,6 @@ const GalleryPreviewItem = ({
           </Button>
         </Form>
       )}
-      {message && (<p className="text-danger">{message}</p>)}
     </div>
   )
 }
