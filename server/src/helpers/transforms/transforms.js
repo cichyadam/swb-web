@@ -38,5 +38,36 @@ module.exports = {
 
     if (reduce) return removeEmpty(schema)
     return schema
+  },
+
+  TTag: function TTag(body, reduce = true) {
+    if (Array.isArray(body)) {
+      const array = body.map((image) => TTag(image, reduce))
+
+      return array
+    }
+
+    const schema = {
+      name: body.name || null
+    }
+
+    if (reduce) return removeEmpty(schema)
+    return schema
+  },
+
+  TBlogPost: (body, reduce = true) => {
+    const schema = {
+      author: body.author || null,
+      title: body.title || null,
+      subtitle: body.subtitle || null,
+      content: body.content || null,
+      thumbnail: body.thumbnail || null,
+      images: body.images || null,
+      isPublished: body.isPublished || null,
+      tags: body.tags || null
+    }
+
+    if (reduce) return removeEmpty(schema)
+    return schema
   }
 }

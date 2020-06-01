@@ -64,5 +64,16 @@ module.exports = {
 
     if (reduce) return removeEmpty(schema)
     return schema
+  },
+  BlogPostCriterion: (query, reduce = true) => {
+    const schema = {
+      _id: query.blogPostIds ? isUrlArray(query.blogPostIds) ? toArray(query.blogPostIds) : query.blogPostIds : null,
+      author: query.authors ? isUrlArray(query.authors) ? toArray(query.authors) : query.authors : null,
+      tags: query.tags ? isUrlArray(query.tags) ? toArray(query.tags) : query.tags : null,
+      isPublished: query.isPublished || null
+    }
+
+    if (reduce) return removeEmpty(schema)
+    return schema
   }
 }
