@@ -23,7 +23,7 @@ module.exports = {
     try {
       const articles = await BlogPostService.list(criteria)
 
-      searchResult(res, criteria, articles, ['title', 'subtitle', 'content', 'author', 'isPublished', 'createdAt', 'updatedAt', 'images', 'tags'])
+      searchResult(res, criteria, articles, ['title', 'subtitle', 'content', 'author', 'isPublished', 'thumbnail', 'createdAt', 'updatedAt', 'images', 'tags'])
     } catch (err) {
       next(err)
     }
@@ -40,7 +40,7 @@ module.exports = {
 
       if (!article) throw new ErrorHandler(404, POST_NOT_FOUND, __filename)
 
-      handleResponse(sculpt(article, ['title', 'subtitle', 'content', 'author', 'isPublished', 'createdAt', 'updatedAt', 'images', 'tags']), res)
+      handleResponse(sculpt(article, ['title', 'subtitle', 'content', 'author', 'isPublished', 'thumbnail', 'createdAt', 'updatedAt', 'images', 'tags']), res)
     } catch (err) {
       next(err)
     }
@@ -53,7 +53,7 @@ module.exports = {
 
       if (!article) throw new ErrorHandler(403, POST_NOT_CREATED, __filename)
 
-      handleResponse(sculpt(article, ['title', 'subtitle', 'content', 'author', 'isPublished', 'createdAt', 'updatedAt', 'images', 'tags']), res)
+      handleResponse(sculpt(article, ['title', 'subtitle', 'content', 'author', 'isPublished', 'thumbnail', 'createdAt', 'updatedAt', 'images', 'tags']), res)
     } catch (err) {
       next(err)
     }
