@@ -56,7 +56,11 @@ const App = () => {
           </Route>
           <Route path="/admin-profile">
             <ToastProvider>
-              <AdminProfile token={token} userData={userData} />
+              <AdminProfile
+                token={token}
+                userData={userData}
+                saveUserData={setUserData}
+              />
             </ToastProvider>
           </Route>
           <Route path="/admin-gallery">
