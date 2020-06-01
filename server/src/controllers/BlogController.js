@@ -22,8 +22,10 @@ module.exports = {
     }
   },
   async getOneBlogPost(req, res, next) {
-    const { id } = req.params
-    const article = await BlogPostService.getById(id)
+    const {
+      blogPostId
+    } = req.params
+    const article = await BlogPostService.getById(blogPostId)
     if (!article) {
       try {
         throw new ErrorHandler(404, POST_NOT_FOUND, __filename)
@@ -58,8 +60,8 @@ module.exports = {
     }
   },
   async deleteBlogPost(req, res, next) {
-    const { id } = req.params
-    const article = await BlogPostService.deleteBlogPost(id)
+    const { blogPostId } = req.params
+    const article = await BlogPostService.deleteBlogPost(blogPostId)
 
     if (!article) {
       try {
@@ -79,9 +81,11 @@ module.exports = {
     }
   },
   async editBlogPost(req, res, next) {
-    const { id } = req.params
+    const {
+      blogPostId
+    } = req.params
     const newData = req.body
-    const article = await BlogPostService.updateById(id, newData)
+    const article = await BlogPostService.updateById(blogPostId, newData)
 
     if (!article) {
       try {

@@ -1,14 +1,21 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Link } from 'react-router-dom'
-import { Navbar, Nav } from 'react-bootstrap'
+import { Navbar, Nav, NavDropdown } from 'react-bootstrap'
 
-const Header = ({ token }) => (
+const Header = ({ token, userData }) => (
   <Navbar expand="lg">
-    <Nav className="offset-lg-1 justify-content-between">
-      { token && (
+    <Nav className="justify-content-between">
+      { token && userData && (
         <>
           <div className="d-flex flex-row">
+            <Nav.Item>
+              <Nav.Link>
+                <Link to="/admin">
+                  Home
+                </Link>
+              </Nav.Link>
+            </Nav.Item>
             <Nav.Item>
               <Nav.Link>
                 <Link to="/admin-blog">
@@ -23,22 +30,27 @@ const Header = ({ token }) => (
                 </Link>
               </Nav.Link>
             </Nav.Item>
-            <Nav.Item>
-              <Nav.Link>
-                <Link to="/admin-users">
-                  Users
-                </Link>
-              </Nav.Link>
-            </Nav.Item>
+            {userData
+            && userData.role !== 'cooperator'
+            && (
+              <Nav.Item>
+                <Nav.Link>
+                  <Link to="/admin-users">
+                    Users
+                  </Link>
+                </Nav.Link>
+              </Nav.Item>
+            )}
           </div>
           <div>
-            <Nav.Item>
-              <Nav.Link>
-                <Link to="/logout" className="text-danger">
-                  Logout
-                </Link>
-              </Nav.Link>
-            </Nav.Item>
+            <NavDropdown title={userData.username} id="user-nav-dropdown">
+              <NavDropdown.Item as={Link} to="/admin-profile">
+                Profile
+              </NavDropdown.Item>
+              <NavDropdown.Item as={Link} to="/logout" className="text-danger">
+                Logout
+              </NavDropdown.Item>
+            </NavDropdown>
           </div>
         </>
       )}
@@ -48,6 +60,13 @@ const Header = ({ token }) => (
             <Nav.Link>
               <Link to="/">
                 Home
+              </Link>
+            </Nav.Link>
+          </Nav.Item>
+          <Nav.Item>
+            <Nav.Link>
+              <Link to="/blog">
+                Blog
               </Link>
             </Nav.Link>
           </Nav.Item>
@@ -65,11 +84,21 @@ const Header = ({ token }) => (
 )
 
 Header.propTypes = {
-  token: PropTypes.string
+  token: PropTypes.string,
+  userData: PropTypes.shape({
+    id: PropTypes.number,
+    username: PropTypes.string,
+    role: PropTypes.string
+  })
 }
 
 Header.defaultProps = {
-  token: undefined
+  token: undefined,
+  userData: PropTypes.shape({
+    id: undefined,
+    username: undefined,
+    role: undefined
+  })
 }
 
 export default Header

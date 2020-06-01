@@ -6,8 +6,10 @@ import PropTypes from 'prop-types'
 import moment from 'moment'
 import { Redirect } from 'react-router-dom'
 
+import { useToasts } from 'react-toast-notifications'
+
 import {
-  Row, Col, Button, Table, Alert
+  Row, Col, Button, Table
 } from 'react-bootstrap'
 
 import BaseSection from '../../../components/BaseSection'
@@ -19,7 +21,7 @@ import TagService from '../../../services/TagService'
 
 const formatDate = (date) => moment(date).format('DD/MM/YY')
 
-const AdminBlog = ({ token }) => {
+const AdminBlog = ({ token, userData }) => {
   const [showModal, setShowModal] = useState(false)
   const [showConfirmModal, setShowConfirmModal] = useState(false)
   // eslint-disable-next-line no-unused-vars
@@ -36,15 +38,17 @@ const AdminBlog = ({ token }) => {
   const [imageUrl, setImageUrl] = useState()
   const [activeTags, setActiveTags] = useState([])
 
-  const [message, setMessage] = useState()
-  const [error, setError] = useState()
+  const { addToast } = useToasts()
 
   const handleList = async () => {
     try {
       const response = (await BlogService.list()).data
       setBlogPosts(response)
     } catch (err) {
-      setMessage(err.response.data.message)
+      addToast(err.response.data.message, {
+        appearance: 'error',
+        autoDismiss: false
+      })
     }
   }
 
@@ -72,7 +76,10 @@ const AdminBlog = ({ token }) => {
         setActiveTags(postTags)
       }
     } catch (err) {
-      setMessage(err.response.data.message)
+      addToast(err.response.data.message, {
+        appearance: 'error',
+        autoDismiss: false
+      })
     }
   }
 
@@ -81,7 +88,10 @@ const AdminBlog = ({ token }) => {
       const response = (await TagService.list()).data
       setTags(response)
     } catch (err) {
-      setMessage(err.response.data.message)
+      addToast(err.response.data.message, {
+        appearance: 'error',
+        autoDismiss: false
+      })
     }
   }
 
@@ -147,11 +157,17 @@ const AdminBlog = ({ token }) => {
       imageUrl
     }
     try {
-      const response = (await BlogService.edit(id, token, data)).data
-      setMessage(response.message)
+      await BlogService.edit(id, token, data).data
+      addToast('Blog post has been successfuly edited.', {
+        appearance: 'success',
+        autoDismiss: false
+      })
       handleList()
     } catch (err) {
-      setMessage(err.response.data.message)
+      addToast(err.response.data.message, {
+        appearance: 'error',
+        autoDismiss: false
+      })
     }
   }
 
@@ -167,12 +183,18 @@ const AdminBlog = ({ token }) => {
       imageUrl
     }
     try {
-      const response = (await BlogService.create(token, data)).data
-      setMessage(response.message)
+      await BlogService.create(token, data).data
+      addToast('Blog post has been successfuly created.', {
+        appearance: 'success',
+        autoDismiss: false
+      })
       handleClose()
       handleList()
     } catch (err) {
-      setError(err.response.data.message)
+      addToast(err.response.data.message, {
+        appearance: 'error',
+        autoDismiss: false
+      })
     }
   }
 
@@ -185,19 +207,20 @@ const AdminBlog = ({ token }) => {
   }
 
   const handleDelete = async (id) => {
-    handleList()
-    handleConfirmClose()
     try {
-      const response = (await BlogService.delete(id, token)).data
-      setMessage(response.message)
+      await BlogService.delete(id, token).data
+      addToast('Blog post has been successfuly deleted.', {
+        appearance: 'success',
+        autoDismiss: false
+      })
+      handleList()
+      handleConfirmClose()
     } catch (err) {
-      setMessage(err.response.data.message)
+      addToast(err.response.data.message, {
+        appearance: 'error',
+        autoDismiss: false
+      })
     }
-  }
-
-  const handleAlertClose = () => {
-    setMessage()
-    setShowAlert(false)
   }
 
   useEffect(() => {
@@ -205,9 +228,8 @@ const AdminBlog = ({ token }) => {
     handleList()
     // This will be removed once the image upload will be done
     setImageUrl('image.png')
-    setAuthor('Adam')
+    setAuthor(userData.username)
   }, [])
-
 
   if (!token) {
     return (
@@ -231,8 +253,8 @@ const AdminBlog = ({ token }) => {
             <BlogModal
               activeTags={activeTags}
               blogPost={blogPost}
-              error={error}
               tags={tags}
+              author={author}
               token={token}
               showModal={showModal}
               closeModal={handleClose}
@@ -245,13 +267,6 @@ const AdminBlog = ({ token }) => {
           </Col>
         </Row>
         <Row className="py-4">
-          <Col lg={12}>
-            {message && (
-              <Alert variant="success" onClose={handleAlertClose} dismissible>
-                <p>{message}</p>
-              </Alert>
-            )}
-          </Col>
           <Col lg={12}>
             <Table striped bordered hover variant="dark">
               <thead>
@@ -305,11 +320,21 @@ const AdminBlog = ({ token }) => {
 }
 
 AdminBlog.propTypes = {
-  token: PropTypes.string
+  token: PropTypes.string,
+  userData: PropTypes.shape({
+    id: PropTypes.number,
+    username: PropTypes.string,
+    role: PropTypes.string
+  })
 }
 
 AdminBlog.defaultProps = {
-  token: undefined
+  token: undefined,
+  userData: PropTypes.shape({
+    id: undefined,
+    username: undefined,
+    role: undefined
+  })
 }
 
 BlogModal.propTypes = {

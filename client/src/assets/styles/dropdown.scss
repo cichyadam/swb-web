@@ -1,0 +1,10 @@
+.dropdown-menu {
+  background-color: $dark-grey;
+.dropdown-item {
+
+  &:hover {
+    background-color: $grey !important;
+  }
+
+}
+}

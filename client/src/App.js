@@ -1,51 +1,76 @@
 import React, { useState, useEffect } from 'react'
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
+import { ToastProvider } from 'react-toast-notifications'
 
 import './assets/styles/index.scss'
 
 import Header from './components/Header'
 
+import BlogPage from './pages/BlogPage'
 import HomePage from './pages/HomePage'
 
 import AdminPage from './pages/AdminPage'
 import AdminBlog from './pages/AdminPage/AdminBlog'
 import AdminGallery from './pages/AdminPage/AdminGallery'
 import AdminUsers from './pages/AdminPage/AdminUsers'
+import AdminProfile from './pages/AdminPage/AdminProfile'
 
 import LogoutPage from './pages/LogoutPage'
 
 const App = () => {
   const [token, setToken] = useState()
+  const [userData, setUserData] = useState()
 
   useEffect(() => {
     const authToken = sessionStorage.getItem('token')
-    if (authToken) {
-      setToken(authToken)
-    }
+    const data = sessionStorage.getItem('user')
+    if (authToken) setToken(authToken)
+    if (data) setUserData(JSON.parse(data))
   }, [])
 
   return (
     <Router>
       <div className="App">
-        <Header token={token} />
+        <Header token={token} userData={userData} />
         <Switch>
           <Route exact path="/">
             <HomePage />
           </Route>
+          <Route exact path="/blog">
+            <BlogPage />
+          </Route>
           <Route path="/admin">
-            <AdminPage token={token} saveToken={setToken} />
+            <ToastProvider>
+              <AdminPage
+                token={token}
+                saveToken={setToken}
+                userData={userData}
+                saveUserData={setUserData}
+              />
+            </ToastProvider>
           </Route>
           <Route path="/admin-blog">
-            <AdminBlog token={token} />
+            <ToastProvider>
+              <AdminBlog token={token} userData={userData} />
+            </ToastProvider>
+          </Route>
+          <Route path="/admin-profile">
+            <ToastProvider>
+              <AdminProfile token={token} userData={userData} />
+            </ToastProvider>
           </Route>
           <Route path="/admin-gallery">
-            <AdminGallery token={token} />
+            <ToastProvider>
+              <AdminGallery token={token} userData={userData} />
+            </ToastProvider>
           </Route>
           <Route path="/admin-users">
-            <AdminUsers token={token} />
+            <ToastProvider>
+              <AdminUsers token={token} userData={userData} />
+            </ToastProvider>
           </Route>
           <Route path="/logout">
-            <LogoutPage removeToken={setToken} />
+            <LogoutPage removeToken={setToken} removeUserData={setUserData} />
           </Route>
         </Switch>
       </div>

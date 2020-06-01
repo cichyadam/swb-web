@@ -7,8 +7,7 @@ const AlbumModal = ({
   showModal,
   closeModal,
   handleChange,
-  handleCreate,
-  error
+  handleCreate
 }) => (
   <Modal
     show={showModal}
@@ -34,7 +33,6 @@ const AlbumModal = ({
             onChange={handleChange}
           />
         </Form.Group>
-        {error && (<p className="text-danger">{error}</p>)}
       </Form>
     </Modal.Body>
     <Modal.Footer>
@@ -48,12 +46,7 @@ AlbumModal.propTypes = {
   showModal: PropTypes.bool.isRequired,
   closeModal: PropTypes.func.isRequired,
   handleCreate: PropTypes.func.isRequired,
-  handleChange: PropTypes.func.isRequired,
-  error: PropTypes.string
-}
-
-AlbumModal.defaultProps = {
-  error: undefined
+  handleChange: PropTypes.func.isRequired
 }
 
 export default AlbumModal

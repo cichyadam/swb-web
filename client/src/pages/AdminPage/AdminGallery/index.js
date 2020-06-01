@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import { Redirect } from 'react-router-dom'
+import { useToasts } from 'react-toast-notifications'
 
 import {
   Row,
@@ -32,12 +33,13 @@ const AdminGallery = ({ token }) => {
   const [album, setAlbum] = useState([])
 
   const [images, setImages] = useState([])
-  const [image, setImage] = useState([])
+  /* const [image, setImage] = useState([]) */
 
   const [showAlbumModal, setShowAlbumModal] = useState(false)
   const [albumName, setAlbumName] = useState()
 
-  const [message, setMessage] = useState()
+
+  const { addToast } = useToasts()
 
 
   const listAlbums = async () => {
@@ -45,7 +47,10 @@ const AdminGallery = ({ token }) => {
       const response = (await AlbumService.list(token)).data.data
       setAlbums(response)
     } catch (err) {
-      setMessage(err.response.data.message)
+      addToast(err.response.data.message, {
+        appearance: 'error',
+        autoDismiss: false
+      })
     }
   }
 
@@ -54,7 +59,10 @@ const AdminGallery = ({ token }) => {
       const response = (await ImageService.list(token)).data.data
       setImages(response)
     } catch (err) {
-      setMessage(err.response.data.message)
+      addToast(err.response.data.message, {
+        appearance: 'error',
+        autoDismiss: false
+      })
     }
   }
 
@@ -63,17 +71,29 @@ const AdminGallery = ({ token }) => {
       const response = (await AlbumService.listOne(token, id)).data.data
       setAlbum(response)
     } catch (err) {
-      setMessage(err.response.data.message)
+      addToast(err.response.data.message, {
+        appearance: 'error',
+        autoDismiss: false
+      })
     }
   }
 
-  const listOneImage = async (id) => {
+  /*  const listOneImage = async (id) => {
     try {
       const response = (await ImageService.listOne(token, id)).data.data
       setImage(response)
     } catch (err) {
       setMessage(err.response.data.message)
     }
+  } */
+
+
+  const handleOpen = () => {
+    setShowAlbumModal(true)
+  }
+
+  const handleClose = () => {
+    setShowAlbumModal(false)
   }
 
   const createAlbum = async () => {
@@ -82,9 +102,17 @@ const AdminGallery = ({ token }) => {
     }
     try {
       await AlbumService.create(token, data)
+      addToast('Album was successfully created', {
+        appearance: 'success',
+        autoDismiss: false
+      })
       listAlbums()
+      handleClose()
     } catch (err) {
-      setMessage(err.response.data.message)
+      addToast(err.response.data.message, {
+        appearance: 'error',
+        autoDismiss: false
+      })
     }
   }
 
@@ -95,14 +123,6 @@ const AdminGallery = ({ token }) => {
 
 
     // listOneImage(event.target.id)
-  }
-
-  const handleOpen = () => {
-    setShowAlbumModal(true)
-  }
-
-  const handleClose = () => {
-    setShowAlbumModal(false)
   }
 
   const handleChange = (event) => {
@@ -142,7 +162,6 @@ const AdminGallery = ({ token }) => {
                 closeModal={handleClose}
                 handleCreate={createAlbum}
                 handleChange={handleChange}
-                error={message}
               />
             </>
           )
@@ -197,7 +216,7 @@ const AdminGallery = ({ token }) => {
           )
         }
         {/* TO DO : Finish detailed preview of one image */}
-        {
+        {/* {
           activeSection === 'images'
           && image
           && (
@@ -209,7 +228,7 @@ const AdminGallery = ({ token }) => {
               imgSrc={image.src}
             />
           )
-        }
+        } */}
       </Col>
     </BaseSection>
   )
