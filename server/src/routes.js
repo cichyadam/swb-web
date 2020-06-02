@@ -1,6 +1,5 @@
 const UserController = require('./controllers/UserController')
 const BlogController = require('./controllers/BlogController')
-const TagController = require('./controllers/TagController')
 const TestController = require('./controllers/TestController')
 const GalleryController = require('./controllers/GalleryController')
 const Auth = require('./middleware/policies/Auth')
@@ -48,7 +47,7 @@ module.exports = (app) => {
   // BLOG CONTROL ENDPOINTS
 
   app.get('/api/blog',
-    BlogController.getAllBlogPosts)
+    BlogController.listBlogPosts)
 
   app.post('/api/blog',
     Auth.authorize,
@@ -56,7 +55,7 @@ module.exports = (app) => {
     BlogController.createBlogPost)
 
   app.get('/api/blog/:blogPostId',
-    BlogController.getOneBlogPost)
+    BlogController.getBlogPost)
 
   app.put('/api/blog/:blogPostId',
     Auth.authorize,
@@ -67,11 +66,11 @@ module.exports = (app) => {
     BlogController.deleteBlogPost)
 
   app.get('/api/tags',
-    TagController.getAllTags)
+    BlogController.getAllTags)
 
   app.post('/api/tags',
     Validate(schemas.tag),
-    TagController.createTag)
+    BlogController.createTag)
 
   // GALERY CONTROL ENDPOINTS
 

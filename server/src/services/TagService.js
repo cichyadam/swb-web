@@ -1,5 +1,5 @@
 /* eslint-disable no-return-await */
-const Tag = require('../models/Tags/Tag.model')
+const Tag = require('../models/Blog/Tag.model')
 
 module.exports = {
   async getAllTags() {

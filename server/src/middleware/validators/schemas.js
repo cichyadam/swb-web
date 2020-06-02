@@ -89,11 +89,12 @@ const schemas = {
       .required()
       .min(10)
       .max(15000),
-    imageUrl: Joi.string()
-      .required()
+    thumbnail: Joi.string()
       .min(5)
       .max(50),
-    tags: Joi.array()
+    tags: Joi.array(),
+    images: Joi.array(),
+    isPublished: Joi.boolean()
   }),
 
   tag: Joi.object().keys({

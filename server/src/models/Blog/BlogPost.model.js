@@ -19,9 +19,17 @@ const BlogPostSchema = new Schema({
     type: String,
     required: true
   },
-  imageUrl: {
-    type: String,
-    required: true
+  thumbnail: {
+    type: Schema.Types.ObjectId,
+    ref: 'Image'
+  },
+  images: [{
+    type: Schema.Types.ObjectId,
+    ref: 'Image'
+  }],
+  isPublished: {
+    type: Boolean,
+    default: false
   },
   createdAt: {
     type: Date,
