@@ -24,6 +24,7 @@ import AlbumService from '../../../services/AlbumService'
 import ImageService from '../../../services/ImageService'
 
 import AlbumModal from './AlbumModal'
+import ImageModal from './ImageModal'
 
 
 const AdminGallery = ({ token }) => {
@@ -37,6 +38,8 @@ const AdminGallery = ({ token }) => {
 
   const [showAlbumModal, setShowAlbumModal] = useState(false)
   const [albumName, setAlbumName] = useState()
+
+  const [showImageModal, setShowImageModal] = useState(false)
 
 
   const { addToast } = useToasts()
@@ -94,6 +97,14 @@ const AdminGallery = ({ token }) => {
 
   const handleClose = () => {
     setShowAlbumModal(false)
+  }
+
+  const handleImageModalOpen = () => {
+    setShowImageModal(true)
+  }
+
+  const handleImageModalClose = () => {
+    setShowImageModal(false)
   }
 
   const createAlbum = async () => {
@@ -169,9 +180,15 @@ const AdminGallery = ({ token }) => {
         {
           activeSection === 'images'
           && (
-            <Button className="my-3">
-              Upload images
-            </Button>
+            <>
+              <Button className="my-3" onClick={() => handleImageModalOpen()}>
+                Upload images
+              </Button>
+              <ImageModal
+                showModal={showImageModal}
+                closeModal={handleImageModalClose}
+              />
+            </>
           )
         }
         <Row>

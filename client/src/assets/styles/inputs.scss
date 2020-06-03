@@ -1,0 +1,18 @@
+.modal-upload {
+  height: 250px;
+  .custom-file-label {
+    height: 200px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    &::after {
+      display: none;
+    }
+
+    svg {
+      fill: $blue;
+    }
+  }
+}
