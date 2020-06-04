@@ -1,7 +1,8 @@
+/* eslint-disable no-underscore-dangle */
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 
-import { Modal, Button } from 'react-bootstrap'
+import { Modal, Button, Form } from 'react-bootstrap'
 
 import FileInput from '../../../../components/FileInput'
 
@@ -17,7 +18,8 @@ const handleUpload = () => new Promise((resolve, reject) => {
 
 const ImageModal = ({
   showModal,
-  closeModal
+  closeModal,
+  albums
 }) => {
   const [fileList, setFileList] = useState()
 
@@ -44,6 +46,23 @@ const ImageModal = ({
           multiple
           onValueChange={(files) => handleFileList(files)}
         />
+      </Modal.Body>
+      <Modal.Body>
+        <Form>
+          <Form.Group controlId="formBasicName">
+            <Form.Label>
+              Assign to album
+            </Form.Label>
+            <Form.Control as="select" name="albums">
+              <option selected disabled>Choose one album</option>
+              {albums && albums.map((album) => (
+                <option key={album._id} id={album._id}>
+                  {album.name}
+                </option>
+              ))}
+            </Form.Control>
+          </Form.Group>
+        </Form>
       </Modal.Body>
       <Modal.Footer>
         <Button variant="primary" onClick={closeModal}>Upload</Button>

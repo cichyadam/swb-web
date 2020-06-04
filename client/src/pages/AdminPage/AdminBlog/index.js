@@ -42,7 +42,7 @@ const AdminBlog = ({ token, userData }) => {
 
   const handleList = async () => {
     try {
-      const response = (await BlogService.list()).data
+      const response = (await BlogService.list()).data.data
       setBlogPosts(response)
     } catch (err) {
       addToast(err.response.data.message, {
@@ -54,7 +54,7 @@ const AdminBlog = ({ token, userData }) => {
 
   const filterTags = (isDisabled) => {
     const filteredTags = tags.map((tag) => {
-      const isSelected = activeTags.some((activeTag) => tag._id === activeTag._id)
+      const isSelected = activeTags.some((activeTag) => tag.id === activeTag.id)
 
       if (isSelected) {
         return {
@@ -69,7 +69,7 @@ const AdminBlog = ({ token, userData }) => {
 
   const handleOnePost = async (id) => {
     try {
-      const response = (await BlogService.listOne(id)).data
+      const response = (await BlogService.listOne(id)).data.data
       setBlogPost(response)
       const postTags = response.tags.map((tag) => tag)
       if (postTags.length !== 0) {
@@ -85,7 +85,7 @@ const AdminBlog = ({ token, userData }) => {
 
   const handleTags = async () => {
     try {
-      const response = (await TagService.list()).data
+      const response = (await TagService.list()).data.data
       setTags(response)
     } catch (err) {
       addToast(err.response.data.message, {
@@ -97,7 +97,7 @@ const AdminBlog = ({ token, userData }) => {
 
   const handleRemoveTag = (id) => {
     const indexToDelete = activeTags.map((tag) => {
-      if (tag._id === id) {
+      if (tag.id === id) {
         return {
           tag
         }
@@ -125,9 +125,9 @@ const AdminBlog = ({ token, userData }) => {
     }
     if (event.target.name === 'tags') {
       const tagIndex = event.target.selectedIndex
-      const _id = event.target[tagIndex].id
+      const { id } = event.target[tagIndex]
       const name = event.target.value
-      setActiveTags(activeTags.concat({ _id, name }))
+      setActiveTags(activeTags.concat({ id, name }))
       filterTags(true)
     }
   }
@@ -147,7 +147,7 @@ const AdminBlog = ({ token, userData }) => {
   const handleSave = async (id) => {
     handleClose()
     // eslint-disable-next-line no-shadow
-    const tags = activeTags.map((tag) => tag._id)
+    const tags = activeTags.map((tag) => tag.id)
     const data = {
       author,
       title,
@@ -173,7 +173,7 @@ const AdminBlog = ({ token, userData }) => {
 
   const handleCreate = async () => {
     // eslint-disable-next-line no-shadow
-    const tags = activeTags.map((tag) => tag._id)
+    const tags = activeTags.map((tag) => tag.id)
     const data = {
       author,
       title,
@@ -183,7 +183,7 @@ const AdminBlog = ({ token, userData }) => {
       imageUrl
     }
     try {
-      await BlogService.create(token, data).data
+      await BlogService.create(token, data)
       addToast('Blog post has been successfuly created.', {
         appearance: 'success',
         autoDismiss: false
@@ -280,7 +280,7 @@ const AdminBlog = ({ token, userData }) => {
               </thead>
               <tbody>
                 {blogPosts && blogPosts.map((post) => (
-                  <tr key={post._id}>
+                  <tr key={post.id}>
                     <td>{formatDate(post.createdAt)}</td>
                     <td>{formatDate(post.updatedAt)}</td>
                     <td>{post.title}</td>
@@ -289,7 +289,7 @@ const AdminBlog = ({ token, userData }) => {
                       <>
                         <Button
                           className="mr-4"
-                          onClick={() => handleOpen(post._id)}
+                          onClick={() => handleOpen(post.id)}
                         >
                           Edit
                         </Button>
@@ -303,7 +303,7 @@ const AdminBlog = ({ token, userData }) => {
                           showConfirmModal={showConfirmModal}
                           closeConfirmModal={handleConfirmClose}
                           handleDelete={handleDelete}
-                          postId={post._id}
+                          postId={post.id}
                         />
                       </>
                     </td>
@@ -345,7 +345,7 @@ BlogModal.propTypes = {
   handleChange: PropTypes.func.isRequired,
   error: PropTypes.string.isRequired,
   blogPost: PropTypes.shape({
-    _id: PropTypes.number,
+    id: PropTypes.number,
     author: PropTypes.string,
     title: PropTypes.string,
     subtitle: PropTypes.string,
