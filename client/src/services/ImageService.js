@@ -1,4 +1,12 @@
-import api from './api'
+import axios from 'axios'
+
+const api = axios.create({
+  baseURL: 'http://localhost:8080/api/',
+  headers: {
+    'Access-Control-Allow-Origin': '*',
+    'content-type': 'multipart/form-data'
+  }
+})
 
 export default {
   list(token) {
@@ -8,7 +16,7 @@ export default {
     return api.get(`/images/${id}?token=${token}`)
   },
   create(token, data) {
-    return api.post(`/images?token=${token}`, data)
+    return api.post(`/testImages?token=${token}`, data)
   },
   edit(id, token, data) {
     return api.put(`/images/${id}?token=${token}`, data)

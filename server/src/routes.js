@@ -93,6 +93,10 @@ module.exports = (app) => {
     upload.array('images', 12),
     GalleryController.createImages)
 
+  app.post('/api/testImages',
+    TestController.upload
+  )
+
   app.delete('/api/images',
     Auth.authorize,
     GalleryController.deleteImages)

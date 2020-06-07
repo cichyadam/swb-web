@@ -185,6 +185,7 @@ const AdminGallery = ({ token }) => {
                 Upload images
               </Button>
               <ImageModal
+                token={token}
                 albums={albums}
                 showModal={showImageModal}
                 closeModal={handleImageModalClose}
