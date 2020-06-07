@@ -37,6 +37,9 @@ const AdminGallery = ({ token }) => {
   const [images, setImages] = useState([])
   const [image, setImage] = useState()
 
+  const [selectedImages, setSelectedImages] = useState([])
+  const [multipleSelectedImages, setMultipleSelectedImages] = useState([])
+
   const [showAlbumModal, setShowAlbumModal] = useState(false)
   const [albumName, setAlbumName] = useState()
 
@@ -97,6 +100,14 @@ const AdminGallery = ({ token }) => {
     }
   }
 
+  const filterSelectedImages = () => {
+    // eslint-disable-next-line consistent-return
+    const filteredImages = images.filter(
+      (image) => selectedImages.indexOf(image.id) !== -1
+    )
+    setMultipleSelectedImages(filteredImages)
+  }
+
 
   const handleOpen = () => {
     setShowAlbumModal(true)
@@ -138,11 +149,16 @@ const AdminGallery = ({ token }) => {
   const handleSelection = (event, id) => {
     event.preventDefault()
     if (activeSection === 'albums') listOneAlbum(id)
-    if (activeSection === 'images') listOneImage(id)
+    if (activeSection === 'images') {
+      setSelectedImages(selectedImages.concat(id))
+      listOneImage(id)
+      filterSelectedImages()
+      if (image) {
+        setImage(null)
+        console.log('second image clicked -> show selection of many images')
+      }
+    }
     /* TO DO : List images of selected album  */
-
-
-    // listOneImage(event.target.id)
   }
 
   const handleChange = (event) => {
@@ -256,10 +272,11 @@ const AdminGallery = ({ token }) => {
             />
           )
         }
-        {/* TO DO : Finish detailed preview of one image */}
         {
           activeSection === 'images'
           && image
+          && multipleSelectedImages
+          && multipleSelectedImages.length <= 1
           && (
             <GalleryPreviewItem
               token={token}
@@ -267,6 +284,19 @@ const AdminGallery = ({ token }) => {
               name={image.title}
               type="image"
               imgSrc={image.url}
+              listItems={listImages}
+            />
+          )
+        }
+        {
+          activeSection === 'images'
+          && multipleSelectedImages
+          && multipleSelectedImages.length > 1
+          && (
+            <GalleryPreviewItem
+              token={token}
+              type="image"
+              images={multipleSelectedImages}
               listItems={listImages}
             />
           )
