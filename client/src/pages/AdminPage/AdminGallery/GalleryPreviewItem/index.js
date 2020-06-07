@@ -1,3 +1,4 @@
+/* eslint-disable global-require */
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 
@@ -10,6 +11,7 @@ import GirlImage from '../../../../assets/images/girl.jpeg'
 import AlbumService from '../../../../services/AlbumService'
 
 import DeleteModal from './DeleteModal'
+import ImageService from '../../../../services/ImageService'
 
 const GalleryPreviewItem = ({
   token,
@@ -20,6 +22,7 @@ const GalleryPreviewItem = ({
   listItems
 }) => {
   const [albumName, setAlbumName] = useState()
+  const [imageTitle, setImageTitle] = useState()
   const [showEditForm, setShowEditForm] = useState(false)
   const [showModal, setShowModal] = useState(false)
 
@@ -29,6 +32,9 @@ const GalleryPreviewItem = ({
     if (event.target.name === 'name' && type === 'album') {
       setAlbumName(event.target.value)
     }
+    if (event.target.name === 'name' && type === 'image') {
+      setImageTitle(event.target.value)
+    }
   }
 
   const editAlbum = async (albumId) => {
@@ -37,11 +43,30 @@ const GalleryPreviewItem = ({
     }
     try {
       await AlbumService.edit(albumId, token, data)
-      listItems()
       addToast('Album was successfully edited', {
         appearance: 'success',
         autoDismiss: false
       })
+      listItems()
+    } catch (err) {
+      addToast(err.response.data.message, {
+        appearance: 'error',
+        autoDismiss: false
+      })
+    }
+  }
+
+  const editImage = async (imageId) => {
+    const data = {
+      title: imageTitle
+    }
+    try {
+      await ImageService.edit(imageId, token, data)
+      addToast('Image was successfully edited', {
+        appearance: 'success',
+        autoDismiss: false
+      })
+      listItems()
     } catch (err) {
       addToast(err.response.data.message, {
         appearance: 'error',
@@ -72,14 +97,42 @@ const GalleryPreviewItem = ({
     }
   }
 
-  /* TO DO : Handle edit of image title and handle delete of image */
+  const handleImageDelete = async (imageIds) => {
+    // Subject to change if passing multiple
+    const images = [imageIds]
+    console.log(images)
+    try {
+      const response = (await ImageService.delete(token, images)).data
+
+      if (response) {
+        listItems()
+        setShowModal(false)
+      }
+      addToast('Image was successfully deleted', {
+        appearance: 'success',
+        autoDismiss: false
+      })
+    } catch (err) {
+      addToast(err.response.data.message, {
+        appearance: 'error',
+        autoDismiss: false
+      })
+    }
+  }
+
+  const handleDelete = (idToDelete) => {
+    if (type === 'album') handleAlbumDelete(idToDelete)
+    if (type === 'image') handleImageDelete(idToDelete)
+  }
+
 
   const handleEditForm = () => {
     setShowEditForm(true)
   }
 
   const handleEdit = (event) => {
-    editAlbum(event.target.id)
+    if (type === 'album') editAlbum(event.target.id)
+    if (type === 'image') editImage(event.target.id)
     setShowEditForm(false)
   }
 
@@ -94,9 +147,21 @@ const GalleryPreviewItem = ({
   return (
     <div id={id} className="d-flex flex-column align-items-center item-preview">
       {type === 'album' && (<FaFolderOpen size={80} />)}
-      {type === 'image' && (<Image src={imgSrc} alt={name} fluid rounded />)}
+      {type === 'image' && (
+        <Image
+          src={
+            // eslint-disable-next-line import/no-dynamic-require
+            require(`../../../../../../server/src/public/images/small/${imgSrc}`)
+          }
+          fluid
+          rounded
+        />
+      )}
       <p className="py-4">
-        Name of
+        {type === 'album' && 'Name'}
+        {type === 'image' && 'Title'}
+        {' '}
+        of
         {' '}
         {type}
         :
@@ -113,8 +178,9 @@ const GalleryPreviewItem = ({
         <DeleteModal
           showModal={showModal}
           closeModal={handleClose}
-          handleDelete={handleAlbumDelete}
+          handleDelete={handleDelete}
           id={id}
+          type={type}
         />
       </div>
       {showEditForm && (
@@ -125,7 +191,8 @@ const GalleryPreviewItem = ({
               {' '}
               {type}
               {' '}
-              Name
+              {type === 'album' && 'Name'}
+              {type === 'image' && 'Title'}
             </Form.Label>
             <Form.Control
               type="text"

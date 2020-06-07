@@ -13,9 +13,11 @@ const ImageModal = ({
   token,
   showModal,
   closeModal,
-  albums
+  albums,
+  fileList,
+  setFileList,
+  listImages
 }) => {
-  const [fileList, setFileList] = useState([])
   const [titles, setTitles] = useState([])
   const [albumId, setAlbumId] = useState([])
   const [typingTimeout, setTypingTimeout] = useState(0)
@@ -24,6 +26,14 @@ const ImageModal = ({
   const { addToast } = useToasts()
 
   const handleFileList = (files) => {
+    if (files.length > 12) {
+      addToast('Maximum 12 images can be uploaded', {
+        appearance: 'error',
+        autoDismiss: false
+      })
+      closeModal()
+      setFileList([])
+    }
     setFileList(files)
   }
 
@@ -53,6 +63,7 @@ const ImageModal = ({
         autoDismiss: false
       })
       closeModal()
+      listImages()
     } catch (err) {
       addToast(err.response.data.message, {
         appearance: 'error',
@@ -138,7 +149,10 @@ ImageModal.propTypes = {
   token: PropTypes.string.isRequired,
   showModal: PropTypes.bool.isRequired,
   closeModal: PropTypes.func.isRequired,
-  albums: PropTypes.node.isRequired
+  albums: PropTypes.node.isRequired,
+  fileList: PropTypes.string.isRequired,
+  setFileList: PropTypes.func.isRequired,
+  listImages: PropTypes.func.isRequired
 }
 
 export default ImageModal

@@ -1,3 +1,4 @@
+/* eslint-disable global-require */
 /* eslint-disable no-shadow */
 /* eslint-disable no-underscore-dangle */
 import React, { useState, useEffect } from 'react'
@@ -31,24 +32,26 @@ const AdminGallery = ({ token }) => {
   const [activeSection, setActiveSection] = useState()
 
   const [albums, setAlbums] = useState([])
-  const [album, setAlbum] = useState([])
+  const [album, setAlbum] = useState()
 
   const [images, setImages] = useState([])
-  /* const [image, setImage] = useState([]) */
+  const [image, setImage] = useState()
 
   const [showAlbumModal, setShowAlbumModal] = useState(false)
   const [albumName, setAlbumName] = useState()
 
   const [showImageModal, setShowImageModal] = useState(false)
 
+  const [fileList, setFileList] = useState([])
+
 
   const { addToast } = useToasts()
-
 
   const listAlbums = async () => {
     try {
       const response = (await AlbumService.list(token)).data.data
       setAlbums(response)
+      setAlbum(null)
     } catch (err) {
       addToast(err.response.data.message, {
         appearance: 'error',
@@ -59,8 +62,9 @@ const AdminGallery = ({ token }) => {
 
   const listImages = async () => {
     try {
-      const response = (await ImageService.list(token)).data.data
+      const response = (await ImageService.list()).data.data
       setImages(response)
+      setImage(null)
     } catch (err) {
       addToast(err.response.data.message, {
         appearance: 'error',
@@ -81,14 +85,17 @@ const AdminGallery = ({ token }) => {
     }
   }
 
-  /*  const listOneImage = async (id) => {
+  const listOneImage = async (id) => {
     try {
-      const response = (await ImageService.listOne(token, id)).data.data
+      const response = (await ImageService.listOne(id)).data.data
       setImage(response)
     } catch (err) {
-      setMessage(err.response.data.message)
+      addToast(err.response.data.message, {
+        appearance: 'error',
+        autoDismiss: false
+      })
     }
-  } */
+  }
 
 
   const handleOpen = () => {
@@ -105,6 +112,7 @@ const AdminGallery = ({ token }) => {
 
   const handleImageModalClose = () => {
     setShowImageModal(false)
+    setFileList([])
   }
 
   const createAlbum = async () => {
@@ -129,7 +137,8 @@ const AdminGallery = ({ token }) => {
 
   const handleSelection = (event, id) => {
     event.preventDefault()
-    listOneAlbum(id)
+    if (activeSection === 'albums') listOneAlbum(id)
+    if (activeSection === 'images') listOneImage(id)
     /* TO DO : List images of selected album  */
 
 
@@ -137,16 +146,14 @@ const AdminGallery = ({ token }) => {
   }
 
   const handleChange = (event) => {
-    if (event.target.name === 'name') {
-      setAlbumName(event.target.value)
-    }
+    if (event.target.name === 'name') setAlbumName(event.target.value)
   }
 
 
   useEffect(() => {
-    listAlbums()
-    listImages()
-  }, [])
+    if (activeSection === 'albums') listAlbums()
+    if (activeSection === 'images') listImages()
+  }, [activeSection])
 
   if (!token) {
     return (
@@ -188,7 +195,10 @@ const AdminGallery = ({ token }) => {
                 token={token}
                 albums={albums}
                 showModal={showImageModal}
+                fileList={fileList}
+                setFileList={setFileList}
                 closeModal={handleImageModalClose}
+                listImages={listImages}
               />
             </>
           )
@@ -199,23 +209,35 @@ const AdminGallery = ({ token }) => {
               lg={4}
               key={album.name}
               id={album.id}
-              className="d-flex flex-column align-items-center mx-auto my-3 album-icon"
+              className="my-3 album-icon text-center"
               onClick={(event) => handleSelection(event, album.id)}
             >
               <FaFolderOpen size={80} />
-              <p>{album.name}</p>
+              <p className="text-uppercase">
+                {album.name}
+              </p>
             </Col>
           ))}
           {activeSection === 'images' && images && images.map((image) => (
             <Col
               lg={4}
-              key={image.name}
+              key={image.title}
               id={image.id}
-              className="d-flex flex-column align-items-center mx-auto my-3 album-icon"
-              onClick={(event) => handleSelection(event)}
+              className="my-3 album-icon"
+              onClick={(event) => handleSelection(event, image.id)}
             >
-              <Image src={image.src} fluid rounded />
-              <p>{album.name}</p>
+              <Image
+                src={
+                  // eslint-disable-next-line import/no-dynamic-require
+                  require(`../../../../../server/src/public/images/small/${image.url}`)
+                }
+                fluid
+                rounded
+              />
+              <p className="text-center text-uppercase">
+                {image.title}
+                {' '}
+              </p>
             </Col>
           ))}
         </Row>
@@ -235,19 +257,20 @@ const AdminGallery = ({ token }) => {
           )
         }
         {/* TO DO : Finish detailed preview of one image */}
-        {/* {
+        {
           activeSection === 'images'
           && image
           && (
             <GalleryPreviewItem
               token={token}
               id={image._id}
-              name={image.name}
-              type="album"
-              imgSrc={image.src}
+              name={image.title}
+              type="image"
+              imgSrc={image.url}
+              listItems={listImages}
             />
           )
-        } */}
+        }
       </Col>
     </BaseSection>
   )
