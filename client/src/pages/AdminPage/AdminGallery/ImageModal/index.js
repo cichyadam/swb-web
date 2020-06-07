@@ -9,16 +9,6 @@ import FileInput from '../../../../components/FileInput'
 
 import ImageService from '../../../../services/ImageService'
 
-const handleUpload = () => new Promise((resolve, reject) => {
-  setTimeout(() => {
-    if (Math.random() > 0.2) {
-      resolve()
-    } else {
-      reject()
-    }
-  }, 2000)
-})
-
 const ImageModal = ({
   token,
   showModal,
@@ -27,13 +17,14 @@ const ImageModal = ({
 }) => {
   const [fileList, setFileList] = useState([])
   const [titles, setTitles] = useState([])
+  const [albumId, setAlbumId] = useState([])
   const [typingTimeout, setTypingTimeout] = useState(0)
   const [, setTyping] = useState(false)
 
   const { addToast } = useToasts()
 
   const handleFileList = (files) => {
-    setFileList(Array.from(files).map((file) => file))
+    setFileList(files)
   }
 
 
@@ -49,19 +40,36 @@ const ImageModal = ({
   }
 
   const handleImageUpload = async () => {
-    let data = new FormData()
+    const data = new FormData()
     for (let i = 0; i < fileList.length; i += 1) {
       data.append('images', fileList[i])
+      data.append('title', titles[i])
+      data.append('album', albumId)
     }
     try {
-      const response = (await ImageService.create(token, data)).data
-      //console.log(response)
+      await ImageService.create(token, data)
+      addToast('Images successfully uploaded', {
+        appearance: 'success',
+        autoDismiss: false
+      })
+      closeModal()
     } catch (err) {
-      //console.log(err.response)
       addToast(err.response.data.message, {
         appearance: 'error',
         autoDismiss: false
       })
+    }
+  }
+
+  const handleAlbumId = (event) => {
+    if (event.target.name === 'albums') {
+      const albumIndex = event.target.selectedIndex
+      if (albums[albumIndex - 1] === undefined) {
+        setAlbumId(null)
+      } else {
+        const idOfAlbum = albums[albumIndex - 1].id
+        setAlbumId(idOfAlbum)
+      }
     }
   }
 
@@ -106,13 +114,14 @@ const ImageModal = ({
             <Form.Label>
               Assign to album
             </Form.Label>
-            <Form.Control as="select" name="albums">
+            <Form.Control as="select" name="albums" onChange={handleAlbumId}>
               <option selected disabled>Choose one album</option>
               {albums && albums.map((album) => (
                 <option key={album._id} id={album._id}>
                   {album.name}
                 </option>
               ))}
+              <option id="null">uncategorised</option>
             </Form.Control>
           </Form.Group>
         </Form>

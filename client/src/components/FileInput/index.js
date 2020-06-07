@@ -35,12 +35,10 @@ const FileInput = ({
 
   const handleChange = chainEventHandler((event) => {
     const { files } = event.target
-    const filesArray = Array.from(files)
-
+    const filesArray = Object.values(files)
     const newValue = filesArray.map((file) => file.name).join(', ')
     setValue(newValue)
-
-    if (onValueChange) onValueChange(files)
+    if (onValueChange) onValueChange(filesArray)
     if (upload) filesArray.forEach((file) => upload(file))
   }, onChange)
 

@@ -94,6 +94,7 @@ module.exports = (app) => {
     GalleryController.createImages)
 
   app.post('/api/testImages',
+    upload.array('images', 12),
     TestController.upload
   )
 
