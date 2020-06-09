@@ -4,12 +4,14 @@ import PropTypes from 'prop-types'
 import { useToasts } from 'react-toast-notifications'
 
 import { Modal, Button, Form } from 'react-bootstrap'
+import { FaArrowRight } from 'react-icons/fa'
 
 import FileInput from '../../../../components/FileInput'
 
 import ImageService from '../../../../services/ImageService'
 
 const ImageModal = ({
+  userData,
   token,
   showModal,
   closeModal,
@@ -87,16 +89,35 @@ const ImageModal = ({
   return (
     <Modal
       show={showModal}
-      size="lg"
+      size="xl"
       aria-labelledby="contained-modal-title-vcenter"
       centered
     >
-      <Modal.Header>
+      <Modal.Header className="d-block">
         <Modal.Title id="contained-modal-title-vcenter">
-          Upload Images
+          Hey
+          {' '}
+          {userData.username}
+          {' '}
+          , got some sick new photos ? Upload them here.
         </Modal.Title>
+        <h5>
+          Don’t forget to
+          {' '}
+          <a
+            href="https://imagecompressor.com/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            compress
+          </a>
+          !
+        </h5>
       </Modal.Header>
       <Modal.Body className="modal-upload">
+        <p className="text-right">
+          Max 12 images.
+        </p>
         <FileInput
           name="image upload"
           multiple
@@ -137,8 +158,18 @@ const ImageModal = ({
           </Form.Group>
         </Form>
       </Modal.Body>
+      <Button
+        variant="light-blue"
+        onClick={handleImageUpload}
+        className="mx-3"
+      >
+        <div className="mx-2 d-flex flex-row justify-content-between align-items-center">
+          Upload
+          {' '}
+          <FaArrowRight size="10" />
+        </div>
+      </Button>
       <Modal.Footer>
-        <Button variant="primary" onClick={handleImageUpload}>Upload</Button>
         <Button variant="danger" onClick={closeModal}>Close</Button>
       </Modal.Footer>
     </Modal>
@@ -146,6 +177,11 @@ const ImageModal = ({
 }
 
 ImageModal.propTypes = {
+  userData: PropTypes.shape({
+    id: PropTypes.number,
+    username: PropTypes.string,
+    role: PropTypes.string
+  }).isRequired,
   token: PropTypes.string.isRequired,
   showModal: PropTypes.bool.isRequired,
   closeModal: PropTypes.func.isRequired,

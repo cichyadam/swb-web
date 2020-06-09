@@ -1,3 +1,4 @@
+/* eslint-disable jsx-quotes */
 /* eslint-disable array-callback-return */
 /* eslint-disable consistent-return */
 /* eslint-disable no-underscore-dangle */
@@ -8,8 +9,10 @@ import { Redirect } from 'react-router-dom'
 
 import { useToasts } from 'react-toast-notifications'
 
+import { FaPen, FaTrashAlt } from 'react-icons/fa'
+
 import {
-  Row, Col, Button, Table
+  Row, Col, Button, Table, Image
 } from 'react-bootstrap'
 
 import BaseSection from '../../../components/BaseSection'
@@ -240,16 +243,16 @@ const AdminBlog = ({ token, userData }) => {
   return (
     <BaseSection fullScreen>
       <Col lg={12}>
-        <div className="mx-auto d-flex flex-column align-items-center">
-          <h2>Manage blog</h2>
+        <div className="mx-auto d-flex flex-row justify-content-between">
+          <h2>Your latest blog posts</h2>
+          <Button onClick={handleOpen} variant="dark-blue">
+            Create Blog Post
+          </Button>
         </div>
       </Col>
       <Col lg={12}>
         <Row>
           <Col lg={12}>
-            <Button onClick={handleOpen}>
-              Create Blog Post
-            </Button>
             <BlogModal
               activeTags={activeTags}
               blogPost={blogPost}
@@ -268,37 +271,42 @@ const AdminBlog = ({ token, userData }) => {
         </Row>
         <Row className="py-4">
           <Col lg={12}>
-            <Table striped bordered hover variant="dark">
-              <thead>
-                <tr>
-                  <th>Date created</th>
-                  <th>Date updated</th>
-                  <th>Title</th>
-                  <th>Author</th>
-                  <th className="text-center">Actions</th>
-                </tr>
-              </thead>
+            <Table hover variant="light">
               <tbody>
                 {blogPosts && blogPosts.map((post) => (
-                  <tr key={post.id}>
-                    <td>{formatDate(post.createdAt)}</td>
-                    <td>{formatDate(post.updatedAt)}</td>
-                    <td>{post.title}</td>
-                    <td>{post.author}</td>
-                    <td className="d-flex justify-content-center">
+                  <tr key={post.id} className="my-auto">
+                    <td className="image-td">
+                      <Image
+                        src='http://www.oneloveskatemag.com/wp-content/uploads/2019/10/73006529_456126955258424_2125230821144002560_n.jpg'
+                        rounded
+                        className="w-100"
+                      />
+                    </td>
+                    <td>
+                      <h5>
+                        {post.title}
+                      </h5>
+                      <div className="mt-4">
+                        <p className="text-uppercase text-grey font-weight-bold">
+                          author:
+                          {' '}
+                          {post.author}
+                        </p>
+                        <p className="text-uppercase text-grey font-weight-bold">
+                          {formatDate(post.createdAt)}
+                        </p>
+                      </div>
+                    </td>
+                    <td className="d-flex justify-content-center my-auto">
                       <>
-                        <Button
+                        <FaPen
                           className="mr-4"
                           onClick={() => handleOpen(post.id)}
-                        >
-                          Edit
-                        </Button>
-                        <Button
+                        />
+                        <FaTrashAlt
                           variant="danger"
                           onClick={handleConfirmOpen}
-                        >
-                          Delete
-                        </Button>
+                        />
                         <ConfirmModal
                           showConfirmModal={showConfirmModal}
                           closeConfirmModal={handleConfirmClose}

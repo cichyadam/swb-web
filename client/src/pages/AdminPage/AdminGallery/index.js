@@ -28,7 +28,7 @@ import AlbumModal from './AlbumModal'
 import ImageModal from './ImageModal'
 
 
-const AdminGallery = ({ token }) => {
+const AdminGallery = ({ token, userData }) => {
   const [activeSection, setActiveSection] = useState()
 
   const [albums, setAlbums] = useState([])
@@ -118,6 +118,7 @@ const AdminGallery = ({ token }) => {
   }
 
   const handleImageModalOpen = () => {
+    listAlbums()
     setShowImageModal(true)
   }
 
@@ -183,20 +184,26 @@ const AdminGallery = ({ token }) => {
         <GalleryNav setActiveSection={setActiveSection} />
       </Col>
       <Col lg={8} className="gallery-main">
-        <GalleryFilter />
         {
           activeSection === 'albums'
           && (
             <>
-              <Button className="my-3" onClick={() => handleOpen()}>
-                Create new album
-              </Button>
+              <div className="mx-auto d-flex flex-row justify-content-between mb-3">
+                <h2>Albums of SWB gallery</h2>
+                <Button
+                  variant="dark-blue"
+                  onClick={() => handleOpen()}
+                >
+                  Create new album
+                </Button>
+              </div>
               <AlbumModal
                 showModal={showAlbumModal}
                 closeModal={handleClose}
                 handleCreate={createAlbum}
                 handleChange={handleChange}
               />
+              <GalleryFilter token={token} />
             </>
           )
         }
@@ -204,22 +211,30 @@ const AdminGallery = ({ token }) => {
           activeSection === 'images'
           && (
             <>
-              <Button className="my-3" onClick={() => handleImageModalOpen()}>
-                Upload images
-              </Button>
+              <div className="mx-auto d-flex flex-row justify-content-between mb-3">
+                <h2>Images of SWB gallery</h2>
+                <Button
+                  variant="dark-blue"
+                  onClick={() => handleImageModalOpen()}
+                >
+                  Upload images
+                </Button>
+              </div>
               <ImageModal
                 token={token}
                 albums={albums}
                 showModal={showImageModal}
                 fileList={fileList}
+                userData={userData}
                 setFileList={setFileList}
                 closeModal={handleImageModalClose}
                 listImages={listImages}
               />
+              <GalleryFilter token={token} />
             </>
           )
         }
-        <Row>
+        <Row className="mt-4">
           {activeSection === 'albums' && albums && albums.map((album) => (
             <Col
               lg={4}
@@ -307,7 +322,12 @@ const AdminGallery = ({ token }) => {
 }
 
 AdminGallery.propTypes = {
-  token: PropTypes.string
+  token: PropTypes.string,
+  userData: PropTypes.shape({
+    id: PropTypes.number,
+    username: PropTypes.string,
+    role: PropTypes.string
+  }).isRequired
 }
 
 AdminGallery.defaultProps = {
