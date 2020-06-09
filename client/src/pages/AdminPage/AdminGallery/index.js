@@ -229,6 +229,7 @@ const AdminGallery = ({ token, userData }) => {
                 setFileList={setFileList}
                 closeModal={handleImageModalClose}
                 listImages={listImages}
+                listAlbums={listAlbums}
               />
               <GalleryFilter token={token} />
             </>
