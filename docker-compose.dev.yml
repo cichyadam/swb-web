@@ -1,0 +1,25 @@
+version: '3'
+services:
+  client:
+    build: ./client
+    ports:
+      - '3000:3000'
+    depends_on:
+      - server
+  server:
+    command: npm run dev
+    volumes:
+      - :/usr/src/your-app
+    environment:
+          - NODE_ENV=development
+          - DB_NAME=${DB_NAME}
+          - DB_USER=${DB_USER}
+          - DB_PASS=${DB_PASS}
+    ports:
+      - '8080:8080'
+    depends_on:
+      - mongo
+  mongo:
+    image: mongo
+    ports:
+      - '27017:27017'

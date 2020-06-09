@@ -1,0 +1,42 @@
+nav {
+  background-color: $dark-grey !important;
+  display: flex;
+  z-index: 3000;
+
+  a {
+    color: $light-grey !important;
+    transition: all ease-out .5s;
+
+    &:hover {
+      color: $blue !important;
+      text-decoration: none;
+    }
+
+  }
+
+}
+
+
+.gallery-side-nav {
+  position: relative;
+
+  &::after {
+    content: " ";
+    position: absolute;
+    border-left: 1px $light-grey solid;
+    top: -50px;
+    right: 0;
+    height: 300%;
+    margin-top: auto;
+    margin-bottom: auto;
+  }
+
+  svg {
+    cursor: pointer;
+    transition: all ease-out .5s;
+
+    &:hover {
+      fill: $blue !important;
+    }
+  }
+}

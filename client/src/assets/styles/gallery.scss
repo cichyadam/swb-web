@@ -1,0 +1,30 @@
+.gallery-main {
+position: relative;
+
+  &::before {
+    content: " ";
+    position: absolute;
+    border-left: 1px $light-grey solid;
+    top: -50px;
+    right: 0;
+    height: 300%;
+    margin-top: auto;
+    margin-bottom: auto;
+  }
+
+}
+
+.album-icon {
+  cursor: pointer;
+  transition: all ease-out .5s;
+
+  &:hover {
+    color: $blue !important;
+  }
+
+  svg {
+    &:hover {
+      fill: $blue !important;
+    }
+  }
+}
