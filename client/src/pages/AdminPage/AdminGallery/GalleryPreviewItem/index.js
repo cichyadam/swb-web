@@ -169,7 +169,7 @@ const GalleryPreviewItem = ({
           {name}
         </p>
         <div className="d-flex flex-row justify-content-center">
-          <Button className="mx-2" onClick={handleEditForm}>
+          <Button variant="dark-blue" className="mx-2" onClick={handleEditForm}>
             Edit
           </Button>
           <Button variant="danger" className="mx-2" onClick={handleOpen}>

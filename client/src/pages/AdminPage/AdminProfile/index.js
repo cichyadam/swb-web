@@ -58,17 +58,17 @@ const AdminProfile = ({ saveUserData, userData, token }) => {
     <BaseSection>
       <Col lg={12}>
         <h3>
-          Hello
+          Hey
           {' '}
           {userData.username}
+          !
           {' '}
-          (
-          {userData.role}
-          )
+          Change your username or password here.
+          <br />
+          Then some kickflips ?
         </h3>
       </Col>
       <Col lg={4} className="mx-auto">
-        <h5>Change username or password</h5>
         <Form onSubmit={(event) => handleSubmit(event)}>
           <Form.Group controlId="formBasicUsername">
             <Form.Label>Username</Form.Label>

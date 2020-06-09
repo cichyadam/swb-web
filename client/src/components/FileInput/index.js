@@ -9,15 +9,20 @@ import chainEventHandler from '../../utilities/chainEventHandler'
 
 const DEFAULT_CUSTOM = true
 const DEFAULT_LABEL = (
-  <>
-    DRAG AND DROP FILES OR
-    <span className="text-blue">
-      &nbsp;
-      CLICK TO UPLOAD
-      &nbsp;
-    </span>
-    <FaFileUpload />
-  </>
+  <div className="d-flex flex-column">
+    <h5 className="text-center text-custom-primary">
+      Drag n&apos; drop some photos here, put them
+      <br />
+      into albums in the next step
+    </h5>
+    <p className="text-center mt-4">
+      <u>
+        Upload from computer
+        {' '}
+        <FaFileUpload />
+      </u>
+    </p>
+  </div>
 )
 
 const FileInput = ({
