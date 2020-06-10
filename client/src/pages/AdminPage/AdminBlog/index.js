@@ -27,19 +27,17 @@ const formatDate = (date) => moment(date).format('DD/MM/YY')
 const AdminBlog = ({ token, userData }) => {
   const [showModal, setShowModal] = useState(false)
   const [showConfirmModal, setShowConfirmModal] = useState(false)
-  // eslint-disable-next-line no-unused-vars
-  const [showAlert, setShowAlert] = useState(true)
+
   const [blogPosts, setBlogPosts] = useState()
   const [tags, setTags] = useState()
   const [blogPost, setBlogPost] = useState()
 
-  // TO DO: save everyhing below to blogPost state
   const [author, setAuthor] = useState()
   const [title, setTitle] = useState()
   const [subtitle, setSubtitle] = useState()
   const [content, setContent] = useState()
-  const [imageUrl, setImageUrl] = useState()
   const [activeTags, setActiveTags] = useState([])
+  const [images, setImages] = useState([])
 
   const { addToast } = useToasts()
 
@@ -137,7 +135,7 @@ const AdminBlog = ({ token, userData }) => {
 
   const handleOpen = (id) => {
     setShowModal(true)
-    handleOnePost(id)
+    if (typeof id !== 'object') handleOnePost(id)
   }
 
   const handleClose = () => {
@@ -145,6 +143,7 @@ const AdminBlog = ({ token, userData }) => {
     setActiveTags([])
     filterTags(false)
     setShowModal(false)
+    setImages([])
   }
 
   const handleSave = async (id) => {
@@ -157,7 +156,7 @@ const AdminBlog = ({ token, userData }) => {
       subtitle,
       tags,
       content,
-      imageUrl
+      images
     }
     try {
       await BlogService.edit(id, token, data).data
@@ -183,10 +182,11 @@ const AdminBlog = ({ token, userData }) => {
       subtitle,
       tags,
       content,
-      imageUrl
+      images
     }
     try {
-      await BlogService.create(token, data)
+      const response = await BlogService.create(token, data)
+      console.log(response, images)
       addToast('Blog post has been successfuly created.', {
         appearance: 'success',
         autoDismiss: false
@@ -229,8 +229,6 @@ const AdminBlog = ({ token, userData }) => {
   useEffect(() => {
     handleTags()
     handleList()
-    // This will be removed once the image upload will be done
-    setImageUrl('image.png')
     setAuthor(userData.username)
   }, [])
 
@@ -266,6 +264,7 @@ const AdminBlog = ({ token, userData }) => {
               handleTags={handleTags}
               handleChange={handleChange}
               handleRemoveTag={handleRemoveTag}
+              setImages={setImages}
             />
           </Col>
         </Row>

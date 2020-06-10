@@ -90,13 +90,14 @@ const ImageModal = ({
     }
   }
 
-  const handleImageUpload = async () => {
+  const handleImageUpload = async (event) => {
+    event.preventDefault()
     const data = new FormData()
     for (let i = 0; i < fileList.length; i += 1) {
       data.append('images', fileList[i])
       data.append('title', titles[i])
-      data.append('album', albumId)
     }
+    data.append('albumId', albumId)
     try {
       await ImageService.create(token, data)
       addToast('Images successfully uploaded', {
@@ -212,7 +213,7 @@ const ImageModal = ({
       </Modal.Body>
       <Button
         variant="light-blue"
-        onClick={handleImageUpload}
+        onClick={(event) => handleImageUpload(event)}
         className="mx-3"
       >
         <div className="mx-2 d-flex flex-row justify-content-between align-items-center">

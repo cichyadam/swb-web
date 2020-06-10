@@ -17,6 +17,7 @@ import TagModal from './TagModal'
 import FileInput from '../../../../components/FileInput'
 
 import TagService from '../../../../services/TagService'
+import ImageService from '../../../../services/ImageService'
 
 const CUSTOM_LABEL = (
   <div className="d-flex flex-column">
@@ -45,10 +46,13 @@ const BlogModal = ({
   handleRemoveTag,
   handleTags,
   tags,
-  activeTags
+  activeTags,
+  setImages
 }) => {
   const [showTagModal, setShowTagModal] = useState(false)
   const [tagName, setTagName] = useState()
+
+  const [fileList, setFileList] = useState([])
 
   const { addToast } = useToasts()
 
@@ -63,6 +67,41 @@ const BlogModal = ({
   const handleTagChange = (event) => {
     if (event.target.name === 'tagName') {
       setTagName(event.target.value)
+    }
+  }
+
+  const handleFileList = (files) => {
+    if (files.length > 6) {
+      addToast('Maximum 5 images can be uploaded', {
+        appearance: 'error',
+        autoDismiss: false
+      })
+      setFileList([])
+      closeModal()
+    }
+    setFileList(files)
+  }
+
+  const handleImageUpload = async (event) => {
+    event.preventDefault()
+    const data = new FormData()
+    for (let i = 0; i < fileList.length; i += 1) {
+      data.append('images', fileList[i])
+      data.append('title', Math.random().toString(36).substring(7))
+    }
+    data.append('albumId', '5ee09ed0ef0f9f2aaac7d4f1') /* Id of blog album */
+    try {
+      const response = (await ImageService.create(token, data)).data.data
+      setImages(response.map((image) => image.id))
+      addToast('Images uploaded to gallery. ', {
+        appearance: 'success',
+        autoDismiss: false
+      })
+    } catch (err) {
+      addToast(err.response.data.message, {
+        appearance: 'error',
+        autoDismiss: false
+      })
     }
   }
 
@@ -189,6 +228,8 @@ const BlogModal = ({
             <FileInput
               custom
               label={CUSTOM_LABEL}
+              multiple
+              onValueChange={(files) => handleFileList(files)}
             />
             <p className="compress-link">
               Don’t forget to
@@ -202,11 +243,22 @@ const BlogModal = ({
               </a>
               !
             </p>
+            <Button
+              variant="light-blue"
+              onClick={(event) => handleImageUpload(event)}
+              className="d-block ml-auto w-50 mt-1"
+            >
+              <div className="mx-2 d-flex flex-row justify-content-between align-items-center">
+                Upload images.
+                {' '}
+                <FaArrowRight size="10" />
+              </div>
+            </Button>
             {blogPost && (
               <Button
                 variant="dark-blue"
                 onClick={() => handleSave(blogPost._id)}
-                className="w-100 mt-5"
+                className="d-block ml-auto w-100 mt-4"
               >
                 <div className="mx-2 d-flex flex-row justify-content-between align-items-center">
                   Edit blog post now. Then build skatepark?
@@ -248,6 +300,7 @@ BlogModal.propTypes = {
   handleCreate: PropTypes.func.isRequired,
   handleChange: PropTypes.func.isRequired,
   handleRemoveTag: PropTypes.func.isRequired,
+  setImages: PropTypes.func.isRequired,
   blogPost: PropTypes.shape({
     _id: PropTypes.number,
     author: PropTypes.string,
