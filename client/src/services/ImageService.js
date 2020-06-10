@@ -18,6 +18,9 @@ export default {
   create(token, data) {
     return uploadApi.post(`/images?token=${token}`, data)
   },
+  move(token, data) {
+    return api.put(`/images?token=${token}`, data)
+  },
   edit(id, token, data) {
     return api.put(`/images/${id}?token=${token}`, data)
   },

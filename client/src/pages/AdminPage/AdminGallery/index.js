@@ -34,6 +34,9 @@ const AdminGallery = ({ token, userData }) => {
   const [albums, setAlbums] = useState([])
   const [album, setAlbum] = useState()
 
+  const [selectedAlbums, setSelectedAlbums] = useState([])
+  const [multipleSelectedAlbums, setMultipleSelectedAlbums] = useState([])
+
   const [images, setImages] = useState([])
   const [image, setImage] = useState()
 
@@ -108,6 +111,14 @@ const AdminGallery = ({ token, userData }) => {
     setMultipleSelectedImages(filteredImages)
   }
 
+  const filterSelectedAlbums = () => {
+    // eslint-disable-next-line consistent-return
+    const filteredAlbums = albums.filter(
+      (album) => selectedAlbums.indexOf(album.id) !== -1
+    )
+    setMultipleSelectedAlbums(filteredAlbums)
+  }
+
 
   const handleOpen = () => {
     setShowAlbumModal(true)
@@ -149,17 +160,21 @@ const AdminGallery = ({ token, userData }) => {
 
   const handleSelection = (event, id) => {
     event.preventDefault()
-    if (activeSection === 'albums') listOneAlbum(id)
+    if (activeSection === 'albums') {
+      setSelectedAlbums(selectedAlbums.concat(id))
+      listOneAlbum(id)
+      if (album) {
+        setAlbum(null)
+      }
+    }
     if (activeSection === 'images') {
       setSelectedImages(selectedImages.concat(id))
       listOneImage(id)
-      filterSelectedImages()
       if (image) {
         setImage(null)
-        console.log('second image clicked -> show selection of many images')
+        listAlbums()
       }
     }
-    /* TO DO : List images of selected album  */
   }
 
   const handleChange = (event) => {
@@ -171,6 +186,14 @@ const AdminGallery = ({ token, userData }) => {
     if (activeSection === 'albums') listAlbums()
     if (activeSection === 'images') listImages()
   }, [activeSection])
+
+  useEffect(() => {
+    filterSelectedImages()
+  }, [selectedImages])
+
+  useEffect(() => {
+    filterSelectedAlbums()
+  }, [selectedAlbums])
 
   if (!token) {
     return (
@@ -278,6 +301,8 @@ const AdminGallery = ({ token, userData }) => {
         {
           activeSection === 'albums'
           && album
+          && multipleSelectedAlbums
+          && multipleSelectedAlbums.length <= 1
           && (
             <GalleryPreviewItem
               token={token}
@@ -285,6 +310,23 @@ const AdminGallery = ({ token, userData }) => {
               name={album.name}
               listItems={listAlbums}
               type="album"
+            />
+          )
+        }
+        {
+          activeSection === 'albums'
+          && multipleSelectedAlbums
+          && multipleSelectedAlbums.length >= 2
+          && (
+            <GalleryPreviewItem
+              token={token}
+              type="multipleAlbums"
+              multipleSelectedAlbums={multipleSelectedAlbums}
+              albumIds={selectedAlbums}
+              setAlbum={setAlbum}
+              setMultipleAlbums={setMultipleSelectedAlbums}
+              setSelectedAlbums={setSelectedAlbums}
+              listItems={listAlbums}
             />
           )
         }
@@ -298,6 +340,7 @@ const AdminGallery = ({ token, userData }) => {
               token={token}
               id={image._id}
               name={image.title}
+              album={image.album}
               type="image"
               imgSrc={image.url}
               listItems={listImages}
@@ -307,12 +350,17 @@ const AdminGallery = ({ token, userData }) => {
         {
           activeSection === 'images'
           && multipleSelectedImages
-          && multipleSelectedImages.length > 1
+          && multipleSelectedImages.length >= 2
           && (
             <GalleryPreviewItem
               token={token}
               type="image"
               images={multipleSelectedImages}
+              imagesIds={selectedImages}
+              albums={albums}
+              setImage={setImage}
+              setMultiplemages={setMultipleSelectedImages}
+              setSelectedImages={setSelectedImages}
               listItems={listImages}
             />
           )

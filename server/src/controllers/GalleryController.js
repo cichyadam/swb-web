@@ -34,7 +34,7 @@ module.exports = {
     try {
       const result = await ImageService.list(criteria)
 
-      searchResult(res, criteria, result, ['title', 'url', 'album'])
+      searchResult(res, criteria, result, ['title', 'url', 'createdAt', 'updatedAt', 'album'])
     } catch (err) {
       next(err)
     }
