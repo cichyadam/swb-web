@@ -33,7 +33,7 @@ module.exports = {
   port: process.env.PORT,
   host: process.env.HOST,
   db: {
-    uri: `mongodb://${process.env.HOST}:27017/${process.env.DB_NAME}`
+    uri: process.env.MONGODB_URI
   },
   authentication: {
     issuer: 'SkateWorldBetterAuth',

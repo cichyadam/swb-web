@@ -20,6 +20,7 @@
     "react-scripts": "3.4.1",
     "react-toast-notifications": "^2.4.0"
   },
+  "proxy": "http://localhost:8000",
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
